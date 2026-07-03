@@ -1,7 +1,7 @@
 ---
-title: "Arquitectura del Proyecto del Curso"
+title: "Arquitectura del Proyecto Integrador: Flask y MongoDB"
 sidebarTitle: "Arquitectura"
-description: "Estructura de carpetas y arquitectura del proyecto integrador del curso: API Flask, MongoDB Atlas, cliente HTTP y GitHub."
+description: "Estructura de carpetas y arquitectura del proyecto integrador: API REST con Flask, MongoDB Atlas como base de datos y Postman para pruebas."
 ---
 
 El proyecto integrador del curso combina tres capas principales: una API REST construida con Flask que actúa como backend, MongoDB Atlas como base de datos en la nube, y un cliente HTTP (Postman o navegador) que oficia de frontend o herramienta de pruebas. Esta arquitectura simple pero completa refleja patrones reales de desarrollo web moderno.
@@ -18,14 +18,16 @@ El proyecto de la API sigue una estructura modular que separa el punto de entrad
 
 ```text
 MI-CARPETA-DE-API/
-├── readme.md
-├── data/
-└── v1/
-    ├── run.py          # Entry point
-    └── app/
-        ├── __init__.py  # App factory
-        └── controllers/
-            └── holamundo.py  # Blueprint with endpoints
+│   readme.md
+├───data/
+└───v1/
+    │   run.py
+    └───app/
+        │   __init__.py
+        ├───controllers/
+        │       holamundo.py
+        ├───models/
+        └───public/
 ```
 
 <Tip>
@@ -37,7 +39,7 @@ MI-CARPETA-DE-API/
 | Archivo | Rol |
 |---|---|
 | `run.py` | Punto de entrada. Importa la app factory y arranca el servidor Flask. |
-| `app/__init__.py` | App factory: crea la instancia de Flask y registra todos los Blueprints. |
+| `app/__init__.py` | App factory: crea la instancia de Flask, registra los Blueprints y habilita CORS. |
 | `controllers/holamundo.py` | Blueprint de ejemplo con los primeros endpoints del curso. |
 | `data/` | Carpeta destinada a archivos de datos locales o fixtures de prueba. |
 
@@ -47,7 +49,7 @@ El siguiente flujo describe paso a paso qué sucede desde que el cliente envía 
 
 <Steps>
   <Step title="El cliente envía la request">
-    Un cliente HTTP (Postman, navegador, o `curl`) realiza una petición **GET** o **POST** a una URL del servidor Flask, por ejemplo `GET http://localhost:5000/api/v1/holamundo`.
+    Un cliente HTTP (Postman, navegador, o `curl`) realiza una petición **GET** a una URL del servidor Flask, por ejemplo `GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/holamundo`.
   </Step>
   <Step title="Flask resuelve la ruta mediante el Blueprint">
     El router de Flask busca entre las rutas registradas a través de los Blueprints y encuentra la función asociada al patrón de URL recibido.
@@ -56,28 +58,72 @@ El siguiente flujo describe paso a paso qué sucede desde que el cliente envía 
     La función controladora se ejecuta: puede leer o escribir datos en **MongoDB Atlas**, aplicar validaciones, o simplemente construir una respuesta estática.
   </Step>
   <Step title="Flask devuelve la respuesta JSON">
-    El controlador retorna un objeto JSON junto con el código de estado HTTP apropiado (por ejemplo `200 OK` o `201 Created`), que Flask serializa y envía de vuelta al cliente.
+    El controlador retorna un objeto JSON junto con el código de estado HTTP apropiado (por ejemplo `200 OK` o `400 Bad Request`), que Flask serializa y envía de vuelta al cliente.
   </Step>
 </Steps>
 
-## Ejemplo de Controlador
+## Archivos Clave
 
-El archivo `holamundo.py` muestra la estructura mínima de un Blueprint con un endpoint GET.
+### `run.py` — Punto de entrada
 
 ```python
-# v1/app/controllers/holamundo.py
+from app import create_app
 
-from flask import Blueprint, jsonify
+app = create_app()
+# IMPORTANTE: recarga los cambios en el servidor
+# Activa el modo debug.
 
-holamundo_bp = Blueprint("holamundo", __name__)
+if __name__ == "__main__":
+    app.run(debug=True)
+```
 
-@holamundo_bp.route("/holamundo", methods=["GET"])
-def hola():
-    return jsonify({"mensaje": "¡Hola Mundo desde Flask!"}), 200
+### `app/__init__.py` — App factory
+
+```python
+from flask import Flask
+from flask_cors import CORS
+# Importante: Aca se importa el controller.
+from .controllers.holamundo import holamundo_endpoints
+
+
+def create_app():
+    # Importante: Usamos flask y flask_cors para crear la app.
+    app = Flask(__name__)
+    app.register_blueprint(holamundo_endpoints, url_prefix="/holamundo-ejemplo/api/v1")
+    # IMPORTANTE: Esto es solo para probar, estamos permitiendo el acceso desde cualquier origen.
+    # Esto es importante para cuando hagamos el frontend.
+    CORS(app, origins="*")
+    return app
+```
+
+### `controllers/holamundo.py` — Blueprint de ejemplo
+
+```python
+from flask import Blueprint, request, jsonify
+# De momento no se usa el modelo.
+
+holamundo_endpoints = Blueprint('holamundo_endpoints', __name__)
+
+# GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/holamundo
+@holamundo_endpoints.route('/holamundo', methods=['GET'])
+def obtener_ventas():
+    holaMundo = "hola mundo"
+    return jsonify(holaMundo), 200  # la se convierte a JSON
+
+# GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/saludo?nombre=Jose&apellido=Mujica
+@holamundo_endpoints.route('/saludo', methods=['GET'])
+def saludar():
+    nombre = request.args.get('nombre')
+    apellido = request.args.get('apellido')
+    if not nombre or not apellido:
+        return jsonify({'error': 'Faltan parámetros nombre o apellido'}), 400
+
+    saludo = f"Hola {nombre} {apellido}"
+    return jsonify({'saludo': saludo}), 200
 ```
 
 <Warning>
-  Recordá registrar cada Blueprint en `app/__init__.py` usando `app.register_blueprint(...)`. Sin ese paso, Flask no expondrá las rutas del controlador.
+  Recordá registrar cada Blueprint en `app/__init__.py` usando `app.register_blueprint(...)` con su `url_prefix` correspondiente. Sin ese paso, Flask no expondrá las rutas del controlador.
 </Warning>
 
 ## Recursos Relacionados

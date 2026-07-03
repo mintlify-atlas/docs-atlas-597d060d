@@ -1,7 +1,7 @@
 ---
-title: "Agregaciones en MongoDB con Pipeline"
+title: "Agregaciones en MongoDB con $match, $group y $lookup"
 sidebarTitle: "Agregaciones"
-description: "Usa el pipeline de agregación de MongoDB con $match, $group, $sort, $project, $lookup y $limit para consultas avanzadas."
+description: "Aprende a usar el pipeline de agregación de MongoDB con $match, $group, $sort, $project, $limit, $lookup y $unwind para consultas avanzadas."
 ---
 
 Un **pipeline de agregación** en MongoDB funciona como una línea de producción: los datos de una colección entran al pipeline y se van transformando paso a paso a través de una serie de **etapas** (stages). Cada etapa recibe los documentos que salieron de la etapa anterior, les aplica una operación y los pasa a la siguiente. Al final del pipeline obtenés el resultado procesado y resumido que necesitás. Este mecanismo es el equivalente a los `GROUP BY`, `JOIN` y subconsultas de SQL, pero expresado de forma declarativa y componible.
@@ -18,6 +18,7 @@ Un **pipeline de agregación** en MongoDB funciona como una línea de producció
 | `$project` | Escoge y transforma los campos a mostrar | Mostrar solo nombre y total |
 | `$limit` | Muestra solo cierta cantidad de resultados | Los 5 productos más vendidos |
 | `$lookup` | Une datos de otra colección (como un `JOIN`) | Buscar el stock del producto |
+| `$unwind` | Descomprime un campo array en documentos individuales | Procesar cada elemento del resultado de un `$lookup` |
 
 ---
 

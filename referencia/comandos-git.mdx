@@ -1,7 +1,7 @@
 ---
 title: "Referencia de Comandos Git para el Curso"
 sidebarTitle: "Comandos Git"
-description: "Referencia rápida de todos los comandos Git usados en el curso: init, add, commit, push, pull, branch, merge y clone."
+description: "Referencia rápida de todos los comandos Git usados en el curso: init, add, commit, push, pull, branch, merge, clone y configuración inicial."
 ---
 
 Esta página es una referencia rápida de todos los comandos Git utilizados durante el curso, agrupados por categoría. Podés volver aquí cada vez que necesites recordar cómo usar un comando específico o el flujo de trabajo completo desde cero hasta subir cambios a GitHub.
@@ -109,12 +109,16 @@ git push origin --delete nombre-de-tu-rama  # Eliminar rama remota
 | `git init` | Inicializa un repositorio local |
 | `git add .` | Agrega todos los archivos al staging |
 | `git commit -m "msg"` | Confirma los cambios |
-| `git push origin main` | Sube los cambios a GitHub |
+| `git branch -M main` | Renombra la rama principal a main |
+| `git remote add origin <url>` | Vincula el repositorio local con GitHub |
+| `git push -u origin main` | Sube los cambios por primera vez |
+| `git push origin main` | Sube cambios en sesiones siguientes |
 | `git status` | Ver estado de archivos |
 | `git log` | Ver historial de commits |
 | `git clone <url>` | Clonar un repositorio |
 | `git checkout -b <rama>` | Crear y cambiar a una rama |
 | `git branch -d <rama>` | Eliminar una rama local |
+| `git push origin --delete <rama>` | Eliminar una rama remota |
 
 <CardGroup cols={2}>
   <Card title="Documentación oficial de Git" icon="book" href="https://git-scm.com/doc">

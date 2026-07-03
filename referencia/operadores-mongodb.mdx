@@ -99,85 +99,79 @@ db.ventas.aggregate([
 
 ### Ejemplos de pipelines
 
-<Tabs>
-  <Tab title="Top 5 libros vendidos">
-    Agrupa las ventas por título, suma las cantidades y devuelve los 5 más vendidos.
+**Top 5 libros vendidos** — agrupa las ventas por título, suma las cantidades y devuelve los 5 más vendidos.
 
-    ```js
-    db.ventas.aggregate([
-      {
-        $group: {
-          _id: "$libro.titulo",
-          cantidadVendida: { $sum: "$cantidad" }
-        }
-      },
-      {
-        $sort: { cantidadVendida: -1 }
-      },
-      {
-        $limit: 5
-      }
-    ]);
-    ```
-  </Tab>
-  <Tab title="Ventas por fecha">
-    Filtra ventas de una fecha específica, luego agrupa por título de libro.
+```js
+db.ventas.aggregate([
+  {
+    $group: {
+      _id: "$libro.titulo",
+      cantidadVendida: { $sum: "$cantidad" }
+    }
+  },
+  {
+    $sort: { cantidadVendida: -1 }
+  },
+  {
+    $limit: 5
+  }
+]);
+```
 
-    ```js
-    db.ventas.aggregate([
-      {
-        $match: {
-          fecha_venta: new Date("2025-05-12")
-        }
-      },
-      {
-        $group: {
-          _id: "$libro.titulo",
-          cantidad_vendida: { $sum: "$cantidad" }
-        }
-      },
-      {
-        $sort: { cantidad_vendida: -1 }
-      }
-    ]);
-    ```
-  </Tab>
-  <Tab title="Libros vendidos y stock restante">
-    Combina la colección `ventas` con `libros` usando `$lookup` para calcular el stock restante.
+**Ventas por fecha** — filtra ventas de una fecha específica, luego agrupa por título de libro.
 
-    ```js
-    db.ventas.aggregate([
-      {
-        $group: {
-          _id: "$libro.titulo",
-          cantidadVendida: { $sum: "$cantidad" }
-        }
-      },
-      {
-        $lookup: {
-          from: "libros",
-          localField: "_id",
-          foreignField: "titulo",
-          as: "info_libro"
-        }
-      },
-      {
-        $unwind: "$info_libro"
-      },
-      {
-        $project: {
-          titulo: "$_id",
-          cantidadInicial: "$info_libro.cantidad_stock",
-          cantidadVendida: 1,
-          cantidadRestante: {
-            $subtract: ["$info_libro.cantidad_stock", "$cantidadVendida"]
-          }
-        }
-      },
-      {
-        $sort: { cantidadVendida: -1 }
+```js
+db.ventas.aggregate([
+  {
+    $match: {
+      fecha_venta: new Date("2025-05-12")
+    }
+  },
+  {
+    $group: {
+      _id: "$libro.titulo",
+      cantidad_vendida: { $sum: "$cantidad" }
+    }
+  },
+  {
+    $sort: { cantidad_vendida: -1 }
+  }
+]);
+```
+
+**Libros vendidos y stock restante** — combina la colección `ventas` con `libros` usando `$lookup` para calcular el stock restante.
+
+```js
+db.ventas.aggregate([
+  {
+    $group: {
+      _id: "$libro.titulo",
+      cantidadVendida: { $sum: "$cantidad" }
+    }
+  },
+  {
+    $lookup: {
+      from: "libros",
+      localField: "_id",
+      foreignField: "titulo",
+      as: "info_libro"
+    }
+  },
+  {
+    $unwind: "$info_libro"
+  },
+  {
+    $project: {
+      titulo: "$_id",
+      cantidadInicial: "$info_libro.cantidad_stock",
+      cantidadVendida: 1,
+      cantidadRestante: {
+        $subtract: ["$info_libro.cantidad_stock", "$cantidadVendida"]
       }
-    ]);
-    ```
-  </Tab>
-</Tabs>
+    }
+  },
+  {
+    $sort: { cantidadVendida: -1 }
+  }
+]);
+```

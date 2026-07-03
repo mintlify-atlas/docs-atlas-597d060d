@@ -52,24 +52,21 @@ GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/saludo?nombre=Jose&apellido=M
   El apellido de la persona a saludar.
 </ParamField>
 
-<Tabs>
-  <Tab title="Respuesta exitosa (200)">
-    ```json
-    {
-      "saludo": "Hola Jose Mujica"
-    }
-    ```
-  </Tab>
-  <Tab title="Respuesta de error (400)">
-    Se devuelve cuando falta alguno de los parámetros requeridos.
+**Respuesta exitosa — 200 OK**
 
-    ```json
-    {
-      "error": "Faltan parámetros nombre o apellido"
-    }
-    ```
-  </Tab>
-</Tabs>
+```json
+{
+  "saludo": "Hola Jose Mujica"
+}
+```
+
+**Respuesta de error — 400** *(cuando falta alguno de los parámetros requeridos)*
+
+```json
+{
+  "error": "Faltan parámetros nombre o apellido"
+}
+```
 
 ---
 
@@ -125,24 +122,21 @@ Ejemplo de cuerpo:
 }
 ```
 
-<Tabs>
-  <Tab title="Respuesta exitosa (200)">
-    ```json
-    {
-      "saludo": "Hola estudiante Luis Coto"
-    }
-    ```
-  </Tab>
-  <Tab title="Respuesta de error (400)">
-    Se devuelve cuando falta alguno de los campos en el cuerpo de la solicitud.
+**Respuesta exitosa — 200 OK**
 
-    ```json
-    {
-      "error": "Faltan parámetros nombre o apellido"
-    }
-    ```
-  </Tab>
-</Tabs>
+```json
+{
+  "saludo": "Hola estudiante Luis Coto"
+}
+```
+
+**Respuesta de error — 400** *(cuando falta alguno de los campos en el cuerpo de la solicitud)*
+
+```json
+{
+  "error": "Faltan parámetros nombre o apellido"
+}
+```
 
 ---
 
@@ -164,37 +158,34 @@ GET http://127.0.0.1:5000/estudiante/api/v1/saludo-parametros?nombre=Luis&apelli
   El apellido del estudiante.
 </ParamField>
 
-<Tabs>
-  <Tab title="Respuesta exitosa (200)">
-    ```json
-    {
-      "saludo": "Hola estudiante Luis Coto"
-    }
-    ```
-  </Tab>
-  <Tab title="Respuesta de error (400)">
-    Se devuelve cuando falta alguno de los parámetros en la URL.
+**Respuesta exitosa — 200 OK**
 
-    ```json
-    {
-      "error": "Faltan parámetros nombre o apellido"
-    }
-    ```
-  </Tab>
-</Tabs>
+```json
+{
+  "saludo": "Hola estudiante Luis Coto"
+}
+```
+
+**Respuesta de error — 400** *(cuando falta alguno de los parámetros en la URL)*
+
+```json
+{
+  "error": "Faltan parámetros nombre o apellido"
+}
+```
 
 ---
 
 ## Comparación de métodos de recepción de datos
 
 <CardGroup cols={3}>
-  <Card title="Sin parámetros" icon="circle-check">
+  <Card title="Sin parámetros" icon="circle-check" href="/python/hola-mundo-api">
     Endpoints como `/hola` y `/holamundo` no necesitan ninguna entrada y siempre devuelven la misma respuesta.
   </Card>
-  <Card title="Query string" icon="link">
+  <Card title="Query string" icon="link" href="/python/hola-mundo-api">
     Los parámetros van en la URL después del `?`. Ideal para filtros y búsquedas simples. Ejemplo: `?nombre=Luis&apellido=Coto`.
   </Card>
-  <Card title="Cuerpo JSON" icon="brackets-curly">
+  <Card title="Cuerpo JSON" icon="brackets-curly" href="/python/hola-mundo-api">
     Los datos se envían en el cuerpo de la solicitud como JSON. Más adecuado para datos sensibles o estructuras complejas.
   </Card>
 </CardGroup>

@@ -1,5 +1,5 @@
 ---
-title: "Estructura de un Proyecto Flask con Blueprints"
+title: "Estructura de un Proyecto Flask con Blueprints y create_app"
 sidebarTitle: "Estructura del Proyecto"
 description: "Organiza una API Flask con la fábrica de aplicaciones create_app, Blueprints para controladores y separación de rutas por recurso."
 ---
@@ -39,7 +39,8 @@ def create_app():
 ```
 
 ```python app/controllers/estudiantes.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Flask, jsonify, request
+from flask import Blueprint, jsonify
 
 estudiante_endpoint = Blueprint('estudiante_endpoints', __name__)
 
@@ -47,6 +48,17 @@ estudiante_endpoint = Blueprint('estudiante_endpoints', __name__)
 @estudiante_endpoint.route('/hola', methods=['GET'])
 def holamundo():
     return jsonify({"message": "Hola estudiante", "status": "success"})
+
+# http://127.0.0.1:5000/estudiante/api/v1/saludo
+@estudiante_endpoint.route('/saludo', methods=['GET'])
+def saludo():
+    data = request.get_json()
+    nombre = data.get('nombre')
+    apellido = data.get('apellido')
+    if not nombre or not apellido:
+        return jsonify({'error': 'Faltan parámetros nombre o apellido'}), 400
+    saludo = f"Hola estudiante {nombre} {apellido}"
+    return jsonify({'saludo': saludo}), 200
 
 # http://127.0.0.1:5000/estudiante/api/v1/saludo-parametros?nombre=Luis&apellido=Coto
 @estudiante_endpoint.route('/saludo-parametros', methods=['GET'])
@@ -75,7 +87,11 @@ Esta convención hace que sea fácil versionar la API (cambiando `v1` a `v2`) y 
 
 ## Parámetros de consulta vs JSON body
 
-Flask ofrece dos formas principales de recibir datos en una petición GET:
+El controlador `estudiantes.py` incluye tres rutas que ilustran las diferentes formas de recibir datos:
+
+- **`/hola`** — No recibe parámetros. Devuelve un saludo fijo.
+- **`/saludo`** — Recibe `nombre` y `apellido` desde el **cuerpo JSON** de la petición usando `request.get_json()`.
+- **`/saludo-parametros`** — Recibe `nombre` y `apellido` como **parámetros de consulta** en la URL usando `request.args.get()`.
 
 **Parámetros de consulta (query string)** — se envían en la URL después del símbolo `?` y se leen con `request.args.get()`:
 
@@ -85,7 +101,7 @@ nombre = request.args.get('nombre')
 apellido = request.args.get('apellido')
 ```
 
-**JSON body** — se envían en el cuerpo de la petición (típico en POST/PUT) y se leen con `request.get_json()`:
+**JSON body** — se envían en el cuerpo de la petición y se leen con `request.get_json()`:
 
 ```python
 # Body: { "nombre": "Luis", "apellido": "Coto" }
@@ -94,7 +110,7 @@ nombre = data.get('nombre')
 apellido = data.get('apellido')
 ```
 
-Para endpoints GET con filtros o búsquedas, la convención REST es usar parámetros de consulta. Para crear o actualizar recursos (POST, PUT, PATCH), se usa el JSON body.
+Para endpoints GET con filtros o búsquedas, la convención REST es usar parámetros de consulta. Para crear o actualizar recursos (POST, PUT, PATCH), se usa el JSON body. El ejemplo del curso incluye ambas variantes para que puedas compararlas lado a lado.
 
 ## Herramientas para probar la API
 

@@ -1,7 +1,7 @@
 ---
 title: "Base de Datos de Ejemplo: Librería"
 sidebarTitle: "Datos de Ejemplo"
-description: "Esquema y datos de ejemplo de la base de datos libreria usada en el curso, con colecciones de libros, usuarios y ventas."
+description: "Esquema y datos reales de ejemplo de la base de datos libreria usada en el curso, con colecciones de libros, usuarios y ventas para importar."
 ---
 
 El curso utiliza una base de datos de ejemplo llamada `libreria` que contiene tres colecciones: `libros`, `usuarios` y `ventas`. Estos datos se usan en todos los ejercicios de MongoDB, desde operaciones CRUD básicas hasta consultas de agregación más avanzadas. Importar esta base de datos es el primer paso práctico antes de comenzar con las semanas de contenido.
@@ -106,6 +106,14 @@ Ejemplos de documentos de la colección:
     "hashed_password": "admin123",
     "rol": "admin",
     "fecha_creacion": { "$date": "2025-05-14T00:13:32.275Z" }
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bdb" },
+    "username": "librera99",
+    "email": "libros@example.com",
+    "hashed_password": "libroslibros",
+    "rol": "vendedor",
+    "fecha_creacion": { "$date": "2025-05-14T00:13:32.275Z" }
   }
 ]
 ```
@@ -144,6 +152,22 @@ Ejemplos de documentos de la colección:
     "cantidad": 1,
     "total": 18,
     "usuario": { "username": "juanperez" }
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd7" },
+    "libro": { "titulo": "El Aleph" },
+    "fecha_venta": { "$date": "2025-05-11T00:00:00.000Z" },
+    "cantidad": 3,
+    "total": 37.5,
+    "usuario": { "username": "librera99" }
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd8" },
+    "libro": { "titulo": "Pedro Páramo" },
+    "fecha_venta": { "$date": "2025-05-13T00:00:00.000Z" },
+    "cantidad": 1,
+    "total": 13.75,
+    "usuario": { "username": "admin1" }
   }
 ]
 ```
