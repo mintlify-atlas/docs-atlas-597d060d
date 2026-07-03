@@ -1,0 +1,92 @@
+---
+title: "Arquitectura del Proyecto del Curso"
+sidebarTitle: "Arquitectura"
+description: "Estructura de carpetas y arquitectura del proyecto integrador del curso: API Flask, MongoDB Atlas, cliente HTTP y GitHub."
+---
+
+El proyecto integrador del curso combina tres capas principales: una API REST construida con Flask que actúa como backend, MongoDB Atlas como base de datos en la nube, y un cliente HTTP (Postman o navegador) que oficia de frontend o herramienta de pruebas. Esta arquitectura simple pero completa refleja patrones reales de desarrollo web moderno.
+
+## Componentes de la Arquitectura
+
+- **Flask REST API (backend)** — servidor Python que expone rutas HTTP y procesa la lógica de negocio mediante controladores organizados como Blueprints.
+- **MongoDB Atlas (base de datos)** — servicio de base de datos NoSQL en la nube donde se persisten y consultan los documentos JSON.
+- **Cliente HTTP (frontend / testing)** — herramienta como Postman o un navegador web que envía requests a la API y visualiza las respuestas JSON.
+
+## Estructura de Carpetas
+
+El proyecto de la API sigue una estructura modular que separa el punto de entrada, la configuración de la aplicación y los controladores de cada recurso.
+
+```text
+MI-CARPETA-DE-API/
+├── readme.md
+├── data/
+└── v1/
+    ├── run.py          # Entry point
+    └── app/
+        ├── __init__.py  # App factory
+        └── controllers/
+            └── holamundo.py  # Blueprint with endpoints
+```
+
+<Tip>
+  Mantener los controladores en carpetas separadas facilita escalar el proyecto: cada nuevo recurso (usuarios, productos, etc.) simplemente agrega su propio archivo de Blueprint dentro de `controllers/`.
+</Tip>
+
+### Descripción de cada archivo
+
+| Archivo | Rol |
+|---|---|
+| `run.py` | Punto de entrada. Importa la app factory y arranca el servidor Flask. |
+| `app/__init__.py` | App factory: crea la instancia de Flask y registra todos los Blueprints. |
+| `controllers/holamundo.py` | Blueprint de ejemplo con los primeros endpoints del curso. |
+| `data/` | Carpeta destinada a archivos de datos locales o fixtures de prueba. |
+
+## Ciclo de Vida de una Request
+
+El siguiente flujo describe paso a paso qué sucede desde que el cliente envía una petición hasta que recibe la respuesta JSON.
+
+<Steps>
+  <Step title="El cliente envía la request">
+    Un cliente HTTP (Postman, navegador, o `curl`) realiza una petición **GET** o **POST** a una URL del servidor Flask, por ejemplo `GET http://localhost:5000/api/v1/holamundo`.
+  </Step>
+  <Step title="Flask resuelve la ruta mediante el Blueprint">
+    El router de Flask busca entre las rutas registradas a través de los Blueprints y encuentra la función asociada al patrón de URL recibido.
+  </Step>
+  <Step title="El controlador ejecuta la lógica de negocio">
+    La función controladora se ejecuta: puede leer o escribir datos en **MongoDB Atlas**, aplicar validaciones, o simplemente construir una respuesta estática.
+  </Step>
+  <Step title="Flask devuelve la respuesta JSON">
+    El controlador retorna un objeto JSON junto con el código de estado HTTP apropiado (por ejemplo `200 OK` o `201 Created`), que Flask serializa y envía de vuelta al cliente.
+  </Step>
+</Steps>
+
+## Ejemplo de Controlador
+
+El archivo `holamundo.py` muestra la estructura mínima de un Blueprint con un endpoint GET.
+
+```python
+# v1/app/controllers/holamundo.py
+
+from flask import Blueprint, jsonify
+
+holamundo_bp = Blueprint("holamundo", __name__)
+
+@holamundo_bp.route("/holamundo", methods=["GET"])
+def hola():
+    return jsonify({"mensaje": "¡Hola Mundo desde Flask!"}), 200
+```
+
+<Warning>
+  Recordá registrar cada Blueprint en `app/__init__.py` usando `app.register_blueprint(...)`. Sin ese paso, Flask no expondrá las rutas del controlador.
+</Warning>
+
+## Recursos Relacionados
+
+<CardGroup cols={2}>
+  <Card title="API Flask" icon="bolt" href="/python/hola-mundo-api">
+    Paso a paso para crear tu primera API con Flask: configuración, rutas y Blueprints.
+  </Card>
+  <Card title="Base de Datos" icon="database" href="/mongodb/cuenta-atlas">
+    Cómo conectar tu API Flask a MongoDB Atlas usando PyMongo.
+  </Card>
+</CardGroup>

@@ -1,0 +1,116 @@
+---
+title: "Crear una Cuenta en MongoDB Atlas y Conectar Compass"
+sidebarTitle: "MongoDB Atlas"
+description: "Crea una cuenta gratuita en MongoDB Atlas, configura un clúster M0, agrega tu IP y conéctate desde MongoDB Compass."
+---
+
+MongoDB Atlas es la plataforma de alojamiento en la nube de bases de datos NoSQL de MongoDB. Con el plan gratuito M0 podés tener tu primer clúster activo en minutos y conectarte desde MongoDB Compass para explorar y gestionar tus datos visualmente.
+
+<Warning>
+  No compartas tu contraseña ni cadena de conexión públicamente. Usa esta conexión solo en ambientes de desarrollo.
+</Warning>
+
+## Requisitos previos
+
+Antes de comenzar, asegurate de tener instalado **MongoDB Compass** en tu computadora.
+
+<Card title="Descargar MongoDB Compass" icon="download" href="https://www.mongodb.com/try/download/compass">
+  Descargá la versión estable para tu sistema operativo desde el sitio oficial de MongoDB.
+</Card>
+
+---
+
+## Pasos para configurar Atlas y Compass
+
+<Steps>
+  <Step title="Crear una cuenta gratuita en MongoDB Atlas">
+    Ingresá al sitio web oficial de MongoDB Atlas y creá tu cuenta:
+
+    👉 [https://www.mongodb.com/cloud/atlas/register](https://www.mongodb.com/cloud/atlas/register)
+
+    Podés completar el formulario de registro con tu correo electrónico o iniciar sesión directamente con tu cuenta de **Google**. Ambas opciones son válidas y gratuitas.
+  </Step>
+
+  <Step title="Saltar la personalización de la cuenta">
+    Una vez que iniciaste sesión, Atlas puede pedirte que completes un formulario de personalización (preferencias de uso, tipo de proyecto, etc.). Podés **saltear este paso** haciendo clic en la opción correspondiente para ir directo al panel principal.
+  </Step>
+
+  <Step title="Seleccionar el plan Free (M0) y crear el clúster">
+    En el panel principal, Atlas te pedirá que elijas un plan:
+
+    1. Seleccioná el plan **Free (M0)** — es completamente gratuito y suficiente para el curso.
+    2. Elegí una **región** cercana a tu país (por ejemplo, `AWS / US East (N. Virginia)`).
+    3. Dale un **nombre** a tu clúster o dejá el nombre por defecto.
+    4. Hacé clic en **Create Cluster**.
+
+    <Note>
+      La creación del clúster puede tardar un par de minutos. Atlas te mostrará un indicador de progreso.
+    </Note>
+  </Step>
+
+  <Step title="Crear un usuario de base de datos">
+    Una vez creado el clúster, necesitás un usuario para autenticarte:
+
+    1. En el menú lateral, andá a **Database > Database Access**.
+    2. Hacé clic en **+ ADD NEW DATABASE USER**.
+    3. Elegí el método de autenticación **Password** y completá un **nombre de usuario** y una **contraseña**.
+
+    <Warning>
+      Guardá esta contraseña en un lugar seguro; la vas a necesitar para armar la cadena de conexión más adelante.
+    </Warning>
+
+    4. En la sección de permisos, seleccioná el rol **Atlas Admin**.
+    5. Hacé clic en **Add User**.
+  </Step>
+
+  <Step title="Agregar tu IP a la lista blanca (Network Access)">
+    Para que puedas conectarte desde cualquier red (incluyendo tu casa o la facultad), tenés que habilitar el acceso:
+
+    1. En el menú lateral, andá a **Network Access**.
+    2. Hacé clic en **+ ADD IP ADDRESS**.
+    3. Elegí la opción **Allow access from anywhere**, que agrega la entrada `0.0.0.0/0`.
+    4. Hacé clic en **Confirm**.
+
+    <Note>
+      La opción `0.0.0.0/0` permite conexiones desde cualquier dirección IP. Es conveniente para desarrollo, pero en producción deberías restringirla a las IPs específicas de tu aplicación.
+    </Note>
+  </Step>
+
+  <Step title="Obtener la cadena de conexión">
+    Con el clúster activo y el usuario creado, obtenés la cadena de conexión para Compass:
+
+    1. En el panel principal, andá a **Database > Clusters**.
+    2. Hacé clic en el botón **Connect** de tu clúster.
+    3. Seleccioná la opción **Connect using MongoDB Compass**.
+    4. Copiá la cadena de conexión que se muestra. Tendrá un formato similar a este:
+
+    ```
+    mongodb+srv://<username>:<password>@<cluster>.mongodb.net/test
+    ```
+
+    5. Reemplazá `<username>` y `<password>` por el usuario y contraseña que creaste en el paso anterior.
+  </Step>
+
+  <Step title="Conectarse desde MongoDB Compass">
+    Con la cadena de conexión lista, abrís Compass y te conectás:
+
+    1. Abrí **MongoDB Compass**.
+    2. En el campo **Connection String**, pegá la cadena de conexión que copiaste y completaste con tus credenciales.
+    3. Hacé clic en **Connect**.
+
+    ¡Listo! Si todo está bien configurado, Compass mostrará el panel de bases de datos y podrás comenzar a trabajar con tu clúster de MongoDB Atlas.
+  </Step>
+</Steps>
+
+---
+
+## Recursos adicionales
+
+<CardGroup cols={2}>
+  <Card title="Documentación oficial de MongoDB Atlas" icon="book" href="https://www.mongodb.com/docs/atlas/">
+    Guías completas sobre configuración, seguridad y administración de clústeres en Atlas.
+  </Card>
+  <Card title="Descargar MongoDB Compass" icon="compass" href="https://www.mongodb.com/try/download/compass">
+    Cliente gráfico oficial para explorar y gestionar bases de datos MongoDB.
+  </Card>
+</CardGroup>

@@ -1,0 +1,183 @@
+---
+title: "Referencia de Operadores y Métodos MongoDB"
+sidebarTitle: "Operadores MongoDB"
+description: "Referencia de métodos CRUD, operadores de comparación y etapas de agregación en MongoDB usados en el curso con la base libreria."
+---
+
+Esta página reúne todos los métodos, operadores y etapas de agregación de MongoDB utilizados en el curso. Los ejemplos están basados en la base de datos `libreria`, que incluye las colecciones `libros` y `ventas`. Usá esta referencia para consultar la sintaxis correcta cuando trabajes en las prácticas.
+
+## Métodos CRUD
+
+Los métodos CRUD son las operaciones fundamentales para interactuar con una colección: **C**rear, **L**eer, **A**ctualizar y **E**liminar documentos.
+
+| Método | Descripción |
+|--------|-------------|
+| `db.col.insertOne(doc)` | Inserta un documento |
+| `db.col.insertMany([...])` | Inserta varios documentos |
+| `db.col.find(filtro)` | Lee documentos |
+| `db.col.countDocuments()` | Cuenta documentos |
+| `db.col.updateOne(filtro, op)` | Actualiza un documento |
+| `db.col.updateMany(filtro, op)` | Actualiza múltiples documentos |
+| `db.col.deleteOne(filtro)` | Elimina un documento |
+| `db.col.deleteMany(filtro)` | Elimina múltiples documentos |
+| `db.col.aggregate([pipeline])` | Ejecuta un pipeline de agregación |
+
+## Operadores de comparación
+
+Los operadores de comparación se usan dentro del documento de filtro para seleccionar documentos que cumplan una condición sobre el valor de un campo.
+
+| Operador | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `$gt` | Mayor que | `{ cantidad: { $gt: 5 } }` |
+| `$lt` | Menor que | `{ cantidad: { $lt: 10 } }` |
+| `$gte` | Mayor o igual que | `{ cantidad: { $gte: 20 } }` |
+| `$lte` | Menor o igual que | `{ cantidad: { $lte: 5 } }` |
+| `$and` | AND lógico | `{ $and: [ {campo: val}, ... ] }` |
+
+## Operadores de actualización
+
+Estos operadores se usan en el segundo argumento de `updateOne()` y `updateMany()` para indicarle a MongoDB **qué cambio aplicar** al documento que coincide con el filtro.
+
+| Operador | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `$set` | Cambia el valor de un campo | `{ $set: { precio: 20 } }` |
+| `$inc` | Incrementa o decrementa | `{ $inc: { cantidad: 1 } }` |
+| `$unset` | Elimina un campo | `{ $unset: { campo: "" } }` |
+
+<Tip>
+  `$inc` también puede decrementar: usá un valor negativo, por ejemplo `{ $inc: { stock: -3 } }` para restar 3 al stock.
+</Tip>
+
+### Ejemplos de actualización
+
+Actualizar el precio de un libro específico:
+
+```js
+db.libros.updateOne(
+  { titulo: "Rayuela" },
+  { $set: { precio: 20 } }
+);
+```
+
+Aumentar en 3 el precio de todos los libros de Julio Cortázar:
+
+```js
+db.libros.updateMany(
+  { "autor.nombre": "Julio", "autor.apellido": "Cortázar" },
+  { $inc: { precio: 3 } }
+);
+```
+
+## Etapas del pipeline de agregación
+
+Un pipeline de agregación es como una línea de producción: los documentos entran por la primera etapa, se transforman, y el resultado pasa a la siguiente etapa. Podés combinar tantas etapas como necesites.
+
+| Etapa | Descripción |
+|-------|-------------|
+| `$match` | Filtra documentos (equivalente a WHERE) |
+| `$group` | Agrupa y calcula valores (equivalente a GROUP BY) |
+| `$sort` | Ordena los resultados |
+| `$project` | Selecciona y transforma campos |
+| `$limit` | Limita la cantidad de resultados |
+| `$lookup` | Une con otra colección (equivalente a JOIN) |
+| `$unwind` | Descomprime un campo de tipo array |
+
+### Sintaxis general de `aggregate`
+
+```js
+db.ventas.aggregate([
+  { $match: { cantidad: { $gt: 0 } } },
+  { $group: { _id: "$libro.titulo", total: { $sum: "$cantidad" } } },
+  { $sort: { total: -1 } },
+  { $limit: 5 }
+]);
+```
+
+<Note>
+  En `$sort`, el valor `-1` ordena de mayor a menor (descendente) y `1` ordena de menor a mayor (ascendente).
+</Note>
+
+### Ejemplos de pipelines
+
+<Tabs>
+  <Tab title="Top 5 libros vendidos">
+    Agrupa las ventas por título, suma las cantidades y devuelve los 5 más vendidos.
+
+    ```js
+    db.ventas.aggregate([
+      {
+        $group: {
+          _id: "$libro.titulo",
+          cantidadVendida: { $sum: "$cantidad" }
+        }
+      },
+      {
+        $sort: { cantidadVendida: -1 }
+      },
+      {
+        $limit: 5
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="Ventas por fecha">
+    Filtra ventas de una fecha específica, luego agrupa por título de libro.
+
+    ```js
+    db.ventas.aggregate([
+      {
+        $match: {
+          fecha_venta: new Date("2025-05-12")
+        }
+      },
+      {
+        $group: {
+          _id: "$libro.titulo",
+          cantidad_vendida: { $sum: "$cantidad" }
+        }
+      },
+      {
+        $sort: { cantidad_vendida: -1 }
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="Libros vendidos y stock restante">
+    Combina la colección `ventas` con `libros` usando `$lookup` para calcular el stock restante.
+
+    ```js
+    db.ventas.aggregate([
+      {
+        $group: {
+          _id: "$libro.titulo",
+          cantidadVendida: { $sum: "$cantidad" }
+        }
+      },
+      {
+        $lookup: {
+          from: "libros",
+          localField: "_id",
+          foreignField: "titulo",
+          as: "info_libro"
+        }
+      },
+      {
+        $unwind: "$info_libro"
+      },
+      {
+        $project: {
+          titulo: "$_id",
+          cantidadInicial: "$info_libro.cantidad_stock",
+          cantidadVendida: 1,
+          cantidadRestante: {
+            $subtract: ["$info_libro.cantidad_stock", "$cantidadVendida"]
+          }
+        }
+      },
+      {
+        $sort: { cantidadVendida: -1 }
+      }
+    ]);
+    ```
+  </Tab>
+</Tabs>

@@ -1,0 +1,139 @@
+---
+title: "Importar Datos JSON en MongoDB Compass"
+sidebarTitle: "Importar Datos"
+description: "Importa colecciones JSON en MongoDB Compass paso a paso. Crea la base de datos libreria con libros, usuarios y ventas."
+---
+
+A lo largo del curso vamos a trabajar con una base de datos de ejemplo llamada `libreria`. Esta base de datos contiene tres colecciones — `libros`, `usuarios` y `ventas` — que usaremos para practicar todas las operaciones CRUD y las agregaciones. En esta guía vas a aprender a crear la base de datos e importar los archivos JSON directamente desde MongoDB Compass.
+
+## Requisitos previos
+
+- Tener **MongoDB Compass** instalado en tu computadora.
+- Estar conectado a MongoDB Atlas (o a una instancia local) desde Compass.
+- Contar con los archivos `.json` de las colecciones del curso.
+
+---
+
+## La base de datos `libreria`
+
+La base de datos `libreria` está compuesta por tres colecciones. Cada una representa una entidad del sistema:
+
+<CardGroup cols={3}>
+  <Card title="libros" icon="book">
+    Contiene los libros del catálogo. Cada documento incluye el título, un objeto `autor` anidado con nombre, apellido y nacionalidad, el precio y el stock disponible.
+  </Card>
+  <Card title="usuarios" icon="user">
+    Almacena la información de los usuarios registrados en el sistema.
+  </Card>
+  <Card title="ventas" icon="shopping-cart">
+    Registra las transacciones de venta. Cada documento tiene la información del libro vendido, la cantidad y la fecha de la venta.
+  </Card>
+</CardGroup>
+
+A continuación se muestra un ejemplo del formato JSON de la colección `libros`:
+
+```json
+[
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd0" },
+    "titulo": "Cien años de soledad",
+    "autor": {
+      "nombre": "Gabriel",
+      "apellido": "García Márquez",
+      "nacionalidad": "Colombiana"
+    },
+    "precio": 15.99,
+    "cantidad_stock": 20
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd1" },
+    "titulo": "El Aleph",
+    "autor": {
+      "nombre": "Jorge Luis",
+      "apellido": "Borges",
+      "nacionalidad": "Argentina"
+    },
+    "precio": 12.5,
+    "cantidad_stock": 15
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd2" },
+    "titulo": "Rayuela",
+    "autor": {
+      "nombre": "Julio",
+      "apellido": "Cortázar",
+      "nacionalidad": "Argentina"
+    },
+    "precio": 18,
+    "cantidad_stock": 12
+  },
+  {
+    "_id": { "$oid": "6823e02cea9cb5e5156c4bd3" },
+    "titulo": "Pedro Páramo",
+    "autor": {
+      "nombre": "Juan",
+      "apellido": "Rulfo",
+      "nacionalidad": "Mexicana"
+    },
+    "precio": 13.75,
+    "cantidad_stock": 10
+  }
+]
+```
+
+---
+
+## Importar datos desde Compass
+
+<Steps>
+  <Step title="Abrir MongoDB Compass y conectarse">
+    Abrí **MongoDB Compass** e ingresá la URI de conexión en el campo **Connection String**:
+
+    - Para una instancia **local**:
+      ```
+      mongodb://localhost:27017
+      ```
+    - Para **MongoDB Atlas**, usá la cadena de conexión que obtuviste al configurar tu clúster (ver [Crear una Cuenta en MongoDB Atlas](/mongodb/cuenta-atlas)).
+
+    Hacé clic en **Connect** para establecer la conexión.
+  </Step>
+
+  <Step title="Crear la base de datos libreria">
+    Una vez conectado, creá la base de datos y la primera colección:
+
+    1. En el panel lateral izquierdo, hacé clic en el botón **Create Database** (ícono `+`).
+    2. Completá los campos del formulario:
+       - **Database Name**: `libreria`
+       - **Collection Name**: `libros`
+    3. Hacé clic en **Create Database**.
+
+    Compass va a crear la base de datos `libreria` con la colección `libros` vacía y la vas a ver en el panel lateral.
+  </Step>
+
+  <Step title="Importar el archivo JSON en la colección">
+    Con la colección seleccionada, importá los datos:
+
+    1. Abrí la colección `libros` haciendo clic en su nombre.
+    2. Hacé clic en el botón **IMPORT DATA** que aparece en la esquina superior derecha de la vista de documentos.
+    3. En la ventana emergente, completá los campos:
+       - **Select File**: elegí el archivo `.json` correspondiente a la colección.
+       - **File Type**: seleccioná `JSON`.
+    4. Hacé clic en **Import**.
+
+    Compass procesará el archivo y mostrará los documentos importados en la colección.
+  </Step>
+
+  <Step title="Repetir el proceso para usuarios y ventas">
+    Para importar las otras colecciones, primero tenés que crearlas dentro de la misma base de datos `libreria`:
+
+    1. En el panel lateral, hacé clic en el ícono `+` que aparece junto al nombre de la base de datos `libreria`.
+    2. Ingresá el nombre de la nueva colección (`usuarios` o `ventas`) y confirmá.
+    3. Abrí la nueva colección y repetí el proceso de importación del paso anterior con el archivo `.json` correspondiente.
+
+    Al finalizar, la base de datos `libreria` deberías tenerla con las tres colecciones: `libros`, `usuarios` y `ventas`.
+  </Step>
+</Steps>
+
+<Tip>
+  Antes de importar, verificá que los tipos de datos en el JSON sean correctos: las fechas deben estar en formato ISO 8601 (por ejemplo, `"2025-05-12T00:00:00Z"`), los números no deben estar entre comillas y los booleanos deben ser `true` o `false` sin comillas. En caso de errores, Compass mostrará un mensaje de advertencia antes de completar la importación.
+</Tip>

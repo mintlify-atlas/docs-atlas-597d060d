@@ -1,0 +1,110 @@
+---
+title: "Branches y Pull Requests en GitHub"
+sidebarTitle: "Branches y PRs"
+description: "Crea ramas de trabajo en Git, sube cambios y abre Pull Requests en GitHub para integrar tu código en la rama principal."
+---
+
+Trabajar con ramas (*branches*) es una práctica fundamental en el desarrollo colaborativo. Las ramas te permiten desarrollar nuevas funcionalidades o realizar experimentos de forma aislada, sin afectar el código estable de la rama principal (`main`). Una vez que estás conforme con los cambios, podés integrarlos mediante un *Pull Request* (PR), que facilita la revisión y aprobación del código antes de hacer el merge.
+
+<Note>
+  **Prerequisito:** ya debés tener un repositorio en GitHub con al menos un commit realizado. Si todavía no lo tenés, seguí primero la [Guía Inicial](/git/guia-inicial).
+</Note>
+
+---
+
+<Steps>
+
+  <Step title="Crear un branch">
+    Desde la terminal, estando en la raíz de tu proyecto, ejecutá el siguiente comando reemplazando `nombre-de-tu-rama` por un nombre descriptivo:
+
+    ```bash
+    git checkout -b nombre-de-tu-rama
+    ```
+
+    Por ejemplo:
+
+    ```bash
+    git checkout -b agregar-tarea-nueva
+    ```
+
+    Este comando crea la nueva rama y cambia automáticamente a ella.
+  </Step>
+
+  <Step title="Hacer cambios en el proyecto">
+    Editá los archivos que necesites. Por ejemplo, abrí tu archivo `README.md` y agregá una línea nueva:
+
+    ```markdown
+    Agregado desde el branch agregar-tarea-nueva 🚀
+    ```
+
+    Guardá los cambios. Los cambios que hagas en este paso solo existen en tu rama actual, sin tocar `main`.
+  </Step>
+
+  <Step title="Hacer commit en el nuevo branch">
+    Primero, agregá los cambios al área de staging:
+
+    ```bash
+    git add .
+    ```
+
+    Luego confirmá los cambios con un mensaje descriptivo:
+
+    ```bash
+    git commit -m "Agregué una línea de prueba."
+    ```
+  </Step>
+
+  <Step title="Subir el branch a GitHub">
+    Enviá tu rama al repositorio remoto en GitHub:
+
+    ```bash
+    git push origin agregar-tarea-nueva
+    ```
+
+    Esto sube la nueva rama a GitHub y la deja disponible para abrir un Pull Request.
+  </Step>
+
+  <Step title="Crear un Pull Request en GitHub">
+    1. Ve a tu repositorio en [https://github.com](https://github.com)
+    2. GitHub mostrará automáticamente un botón que dice **"Compare & pull request"** — hacé clic en él
+    3. Escribí un título y una descripción claros, por ejemplo: `"Agregué nueva línea al README"`
+    4. Hacé clic en **"Create pull request"**
+
+    Con esto habrás creado el Pull Request. 🎉
+  </Step>
+
+  <Step title="Fusionar (Merge) el Pull Request">
+    Un administrador del repositorio puede revisar el PR y, si los cambios están bien, hacer clic en **"Merge pull request"** para integrarlos en la rama principal.
+
+    Una vez fusionado, los cambios de tu rama pasarán a formar parte de `main`.
+  </Step>
+
+  <Step title="(Opcional) Eliminar la rama">
+    Una vez fusionada la rama, es buena práctica eliminarla para mantener el repositorio ordenado. Podés hacerlo desde tu terminal:
+
+    ```bash
+    git branch -d agregar-tarea-nueva
+    ```
+
+    Si la rama todavía existe en GitHub, eliminala también con:
+
+    ```bash
+    git push origin --delete agregar-tarea-nueva
+    ```
+  </Step>
+
+</Steps>
+
+---
+
+## Resumen visual del flujo
+
+El ciclo completo de trabajo con ramas y Pull Requests se puede resumir así:
+
+```plaintext
+main
+│
+├───➤ crear rama ➤ editar ➤ commit ➤ push ➤ pull request ➤ merge ➤ ¡listo!
+```
+
+Cada vez que querás agregar una nueva funcionalidad o corregir un error, comenzá creando una rama dedicada, trabajá en ella de forma independiente y luego integrá los cambios a `main` a través de un Pull Request.

@@ -1,0 +1,126 @@
+---
+title: "Referencia de Comandos Git para el Curso"
+sidebarTitle: "Comandos Git"
+description: "Referencia rápida de todos los comandos Git usados en el curso: init, add, commit, push, pull, branch, merge y clone."
+---
+
+Esta página es una referencia rápida de todos los comandos Git utilizados durante el curso, agrupados por categoría. Podés volver aquí cada vez que necesites recordar cómo usar un comando específico o el flujo de trabajo completo desde cero hasta subir cambios a GitHub.
+
+## Configuración inicial
+
+Estos comandos se ejecutan **una sola vez** al instalar Git en tu equipo. Le indican a Git tu identidad para que aparezca correctamente en los commits.
+
+```bash
+git config --global user.name "Tu Nombre"
+git config --global user.email "tucorreo@example.com"
+```
+
+<Tip>
+  Podés verificar la configuración guardada ejecutando `git config --global --list`.
+</Tip>
+
+## Flujo de trabajo básico
+
+El ciclo de los tres comandos que usarás en cada sesión de trabajo. Repetilo cada vez que tengas cambios listos para guardar y compartir.
+
+```bash
+git add .                              # Stage all changes
+git commit -m "mensaje descriptivo"   # Commit staged changes
+git push origin main                  # Push to remote
+```
+
+<Note>
+  El mensaje del commit debe ser descriptivo para que tus compañeros (y vos en el futuro) entiendan qué cambio se realizó. Ejemplos: `"Agrega validación de formulario"`, `"Corrige error en la consulta MongoDB"`.
+</Note>
+
+## Inicializar un repositorio nuevo
+
+Seguí estos pasos cuando comenzás un proyecto desde cero y necesitás vincularlo con un repositorio en GitHub.
+
+<Steps>
+  <Step title="Inicializá el repositorio local">
+    ```bash
+    git init
+    ```
+  </Step>
+  <Step title="Agregá todos los archivos al staging">
+    ```bash
+    git add .
+    ```
+  </Step>
+  <Step title="Realizá el primer commit">
+    ```bash
+    git commit -m "first commit"
+    ```
+  </Step>
+  <Step title="Renombrá la rama principal">
+    ```bash
+    git branch -M main
+    ```
+  </Step>
+  <Step title="Vinculá con el repositorio remoto">
+    ```bash
+    git remote add origin https://github.com/su-usuario/su-proyecto.git
+    ```
+  </Step>
+  <Step title="Subí los cambios por primera vez">
+    ```bash
+    git push -u origin main
+    ```
+  </Step>
+</Steps>
+
+## Verificar estado
+
+Antes de hacer un commit o cuando algo no funciona como esperás, estos comandos te dan visibilidad sobre el estado actual del repositorio.
+
+```bash
+git status    # Ver estado de los archivos
+git log       # Ver historial de commits
+```
+
+## Clonar un repositorio
+
+Para obtener una copia local de un repositorio ya existente en GitHub, usá `git clone` seguido de la URL del repositorio.
+
+```bash
+git clone https://github.com/danielcruca/plataformas-abiertas-2026-2c.git
+```
+
+## Branches (ramas)
+
+Las ramas permiten trabajar en nuevas funcionalidades o experimentos sin afectar la rama principal. Este es el flujo para crear, subir y eliminar una rama.
+
+```bash
+git checkout -b nombre-de-tu-rama           # Crear y cambiar a nueva rama
+git push origin nombre-de-tu-rama           # Subir rama a GitHub
+git branch -d nombre-de-tu-rama             # Eliminar rama local
+git push origin --delete nombre-de-tu-rama  # Eliminar rama remota
+```
+
+<Tip>
+  Nombrá tus ramas de forma descriptiva, por ejemplo: `feature/login`, `fix/error-mongodb`, `practica/semana-03`.
+</Tip>
+
+## Tabla de referencia rápida
+
+| Comando | Descripción |
+|---------|-------------|
+| `git init` | Inicializa un repositorio local |
+| `git add .` | Agrega todos los archivos al staging |
+| `git commit -m "msg"` | Confirma los cambios |
+| `git push origin main` | Sube los cambios a GitHub |
+| `git status` | Ver estado de archivos |
+| `git log` | Ver historial de commits |
+| `git clone <url>` | Clonar un repositorio |
+| `git checkout -b <rama>` | Crear y cambiar a una rama |
+| `git branch -d <rama>` | Eliminar una rama local |
+
+<CardGroup cols={2}>
+  <Card title="Documentación oficial de Git" icon="book" href="https://git-scm.com/doc">
+    Referencia completa de todos los comandos Git disponibles.
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com">
+    Plataforma para alojar y colaborar en repositorios Git.
+  </Card>
+</CardGroup>

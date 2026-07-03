@@ -1,0 +1,98 @@
+---
+title: "Herramientas del Curso Plataformas Abiertas"
+sidebarTitle: "Herramientas"
+description: "Lista de todas las herramientas necesarias para el curso: Git, GitHub, Python, Flask, MongoDB Compass, Postman y VS Code."
+---
+
+Para seguir el curso Plataformas Abiertas necesitás tener instaladas algunas herramientas en tu computadora. Estas te van a permitir trabajar con control de versiones, desarrollar la API en Python, conectarte a la base de datos MongoDB y probar los endpoints HTTP. A continuación encontrás el listado completo con los enlaces de descarga oficiales.
+
+<CardGroup cols={2}>
+  <Card
+    title="Git"
+    icon="code-branch"
+    href="https://git-scm.com/downloads"
+  >
+    Sistema de control de versiones distribuido. Necesario para clonar el repositorio del curso y gestionar los cambios en el código.
+  </Card>
+  <Card
+    title="GitHub"
+    icon="github"
+    href="https://github.com"
+  >
+    Plataforma de alojamiento de repositorios en la nube. El código del curso vive acá y desde acá vas a hacer push de tus trabajos.
+  </Card>
+  <Card
+    title="GitHub Desktop"
+    icon="desktop"
+    href="https://desktop.github.com"
+  >
+    Cliente visual de Git para Windows y macOS. Simplifica las operaciones de commit, push y pull sin usar la línea de comandos.
+  </Card>
+  <Card
+    title="Python 3.x"
+    icon="python"
+    href="https://www.python.org/downloads/"
+  >
+    Lenguaje de programación utilizado para construir la API REST del proyecto. Asegurate de instalar la versión 3.x más reciente.
+  </Card>
+  <Card
+    title="MongoDB Compass"
+    icon="database"
+    href="https://www.mongodb.com/try/download/compass"
+  >
+    Interfaz gráfica oficial para explorar y administrar bases de datos MongoDB. Usada en todas las prácticas de consulta y CRUD.
+  </Card>
+  <Card
+    title="MongoDB Atlas"
+    icon="cloud"
+    href="https://www.mongodb.com/cloud/atlas/register"
+  >
+    Servicio de MongoDB alojado en la nube. Permite crear un cluster gratuito para conectar la API sin instalar MongoDB localmente.
+  </Card>
+  <Card
+    title="Postman"
+    icon="satellite-dish"
+    href="https://www.postman.com/downloads/"
+  >
+    Cliente HTTP para diseñar, documentar y testear endpoints de APIs REST. Muy usado para probar las rutas de la API del curso.
+  </Card>
+  <Card
+    title="VS Code"
+    icon="code"
+    href="https://code.visualstudio.com/"
+  >
+    Editor de código fuente ligero y extensible. Es el editor recomendado para el curso, con soporte excelente para Python y MongoDB.
+  </Card>
+</CardGroup>
+
+## Extensiones de VS Code recomendadas
+
+Una vez que tengas VS Code instalado, estas extensiones mejoran considerablemente la experiencia de desarrollo durante el curso.
+
+- **Postman for VS Code** — Permite usar Postman directamente dentro del editor, sin necesidad de abrir una aplicación separada. Podés instalarla desde el Marketplace:
+  [Postman for VS Code](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode)
+
+- **Python** (Microsoft) — Agrega resaltado de sintaxis, autocompletado, linting y soporte para el depurador de Python. Es la extensión oficial de Microsoft y se instala buscando `Python` en el panel de extensiones de VS Code.
+
+## Dependencias Python del proyecto API
+
+El proyecto de API utiliza Flask como framework web y `flask_cors` para habilitar solicitudes cross-origin desde el frontend. Instalá ambas dependencias con los siguientes comandos en tu terminal:
+
+```bash
+pip install flask
+pip install flask_cors
+```
+
+<Note>
+  Se recomienda crear un entorno virtual de Python antes de instalar las dependencias, para aislar los paquetes del proyecto del resto del sistema. Podés crearlo con `python -m venv venv` y activarlo con `venv\Scripts\activate` (Windows) o `source venv/bin/activate` (macOS/Linux).
+</Note>
+
+## Herramientas alternativas
+
+Si preferís no usar Postman, **Insomnia** es una excelente alternativa para probar APIs REST. Es gratuita, liviana y tiene una interfaz muy clara para organizar colecciones de requests.
+
+- Sitio oficial: [https://insomnia.rest/](https://insomnia.rest/)
+
+<Tip>
+  Para seguir el curso es suficiente con instalar Git, Python, MongoDB Compass y VS Code. GitHub Desktop y Postman son opcionales pero muy recomendables.
+</Tip>

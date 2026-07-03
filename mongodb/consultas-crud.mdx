@@ -1,0 +1,287 @@
+---
+title: "Consultas CRUD en MongoDB: Insert, Read, Update, Delete"
+sidebarTitle: "Consultas CRUD"
+description: "Aprende las operaciones CRUD en MongoDB con insertOne, find, updateOne y deleteOne usando la base de datos libreria del curso."
+---
+
+Las operaciones CRUD (Create, Read, Update, Delete) son la base de cualquier sistema de gestión de datos. En MongoDB, en lugar de tablas y filas como en SQL, trabajamos con **colecciones** y **documentos** en formato JSON. Cada operación tiene métodos específicos que permiten filtrar, modificar y eliminar datos de manera flexible, incluyendo soporte para documentos anidados como el objeto `autor` dentro de cada libro de la base de datos `libreria`.
+
+---
+
+## Ejecutar consultas desde el MongoDB Shell
+
+MongoDB Compass incluye un shell integrado que te permite ejecutar consultas directamente contra tu base de datos sin necesidad de herramientas adicionales. Para abrirlo:
+
+1. Conectate a tu base de datos desde Compass.
+2. En la parte inferior de la pantalla, hacé clic en el ícono de terminal (`>`). Esto abre el panel del **MongoDB Shell**.
+3. Seleccioná la base de datos `libreria` con el siguiente comando:
+
+```js
+use libreria
+```
+
+4. A partir de ahí podés ejecutar cualquier consulta directamente en el shell. Por ejemplo:
+
+```js
+db.libros.find({ "autor.apellido": "Rulfo" });
+```
+
+---
+
+## Insertar documentos
+
+MongoDB provee dos métodos para insertar datos: `insertOne()` para un único documento e `insertMany()` para varios documentos en una sola operación.
+
+### insertOne()
+
+Insertá un solo documento en la colección `libros`:
+
+```js
+db.libros.insertOne({
+  titulo: "El túnel",
+  autor: {
+    nombre: "Ernesto",
+    apellido: "Sábato",
+    nacionalidad: "Argentina"
+  },
+  precio: 14.5,
+  cantidad_stock: 25
+});
+```
+
+Si la operación es exitosa, MongoDB devuelve un objeto con `acknowledged: true` y el `_id` generado automáticamente para el nuevo documento.
+
+### insertMany()
+
+Para insertar múltiples documentos en una sola llamada, usá `insertMany()` con un array:
+
+```js
+db.libros.insertMany([
+  {
+    titulo: "Ficciones",
+    autor: {
+      nombre: "Jorge Luis",
+      apellido: "Borges",
+      nacionalidad: "Argentina"
+    },
+    precio: 13.5,
+    cantidad_stock: 18
+  },
+  {
+    titulo: "Aura",
+    autor: {
+      nombre: "Carlos",
+      apellido: "Fuentes",
+      nacionalidad: "México"
+    },
+    precio: 12.0,
+    cantidad_stock: 22
+  }
+]);
+```
+
+---
+
+## Leer documentos
+
+El método `find()` es el equivalente al `SELECT` de SQL. Puede usarse sin filtros para obtener todos los documentos, o con un objeto de filtro para buscar documentos que cumplan ciertas condiciones.
+
+### Obtener todos los documentos
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.libros.find()
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT * FROM libros;
+    ```
+  </Tab>
+</Tabs>
+
+### Filtrar por ID
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.libros.find({
+      _id: ObjectId("6823e02cea9cb5e5156c4bd4")
+    })
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT * FROM libros
+    WHERE id = '6823e02cea9cb5e5156c4bd4';
+    ```
+  </Tab>
+</Tabs>
+
+### Filtrar por campo anidado (nombre y apellido del autor)
+
+MongoDB permite filtrar por campos dentro de objetos anidados usando la notación de punto (`"objeto.campo"`):
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.libros.find({
+      "autor.nombre": "Isabel",
+      "autor.apellido": "Allende"
+    })
+
+    // Equivalente con operador $and explícito:
+    db.libros.find({
+      $and: [
+        { "autor.nombre": "Isabel" },
+        { "autor.apellido": "Allende" }
+      ]
+    })
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT * FROM libros
+    WHERE autor_nombre = 'Isabel'
+      AND autor_apellido = 'Allende';
+    ```
+  </Tab>
+</Tabs>
+
+### Filtrar con operadores de comparación
+
+MongoDB usa operadores especiales prefijados con `$` para las comparaciones numéricas:
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    // $gt → mayor que
+    db.libros.find({ "cantidad_stock": { $gt: 5 } })
+
+    // $lt → menor que
+    db.libros.find({ "cantidad_stock": { $lt: 10 } })
+
+    // $lte → menor o igual que
+    db.libros.find({ "cantidad_stock": { $lte: 5 } })
+
+    // $gte → mayor o igual que
+    db.libros.find({ "cantidad_stock": { $gte: 20 } })
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    -- mayor que
+    SELECT * FROM libros WHERE cantidad_stock > 5;
+
+    -- menor que
+    SELECT * FROM libros WHERE cantidad_stock < 10;
+
+    -- menor o igual que
+    SELECT * FROM libros WHERE cantidad_stock <= 5;
+
+    -- mayor o igual que
+    SELECT * FROM libros WHERE cantidad_stock >= 20;
+    ```
+  </Tab>
+</Tabs>
+
+### Contar documentos
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.libros.countDocuments()
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT COUNT(*) FROM libros;
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Actualizar documentos
+
+Los métodos `updateOne()` y `updateMany()` permiten modificar documentos existentes. La actualización se describe con **operadores de actualización** que le indican a MongoDB qué cambio aplicar.
+
+### Operadores de actualización
+
+| Operador | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `$set` | Cambia el valor de un campo | `{ $set: { precio: 20 } }` |
+| `$inc` | Incrementa o decrementa un valor numérico | `{ $inc: { cantidad_stock: 1 } }` |
+| `$unset` | Elimina un campo del documento | `{ $unset: { campo: "" } }` |
+
+### updateOne() — actualizar un solo documento
+
+`updateOne()` modifica el **primer** documento que cumple el filtro. Es ideal cuando sabés que hay un único resultado o cuando querés actualizar por `_id`:
+
+```js
+db.libros.updateOne(
+  { titulo: "Rayuela" },
+  { $set: { precio: 20 } }
+);
+```
+
+### updateMany() — actualizar múltiples documentos
+
+`updateMany()` aplica el cambio a **todos** los documentos que cumplen el filtro:
+
+```js
+db.libros.updateMany(
+  { "autor.nombre": "Julio", "autor.apellido": "Cortázar" },
+  { $inc: { precio: 3 } }
+);
+```
+
+Este ejemplo aumenta en `3` el precio de todos los libros de Julio Cortázar.
+
+### Sintaxis básica de referencia
+
+```js
+db.collection.updateOne(
+  { filtro },                  // Documento(s) que querés actualizar
+  { $set: { campo: valor } }   // Cambios que querés aplicar
+);
+```
+
+<Note>
+  `replaceOne()` es otra opción disponible: reemplaza **todo** el documento por uno nuevo en lugar de modificar campos específicos. Usalo con cuidado, ya que sobreescribe todos los campos existentes.
+</Note>
+
+---
+
+## Eliminar documentos
+
+MongoDB provee `deleteOne()` para eliminar el primer documento que coincida con el filtro, y `deleteMany()` para eliminar todos los que coincidan.
+
+### Sintaxis básica
+
+```js
+db.collection.deleteOne({ filtro });   // Borra un solo documento
+db.collection.deleteMany({ filtro });  // Borra todos los documentos que cumplen el filtro
+```
+
+### deleteOne() — eliminar por ID
+
+```js
+db.libros.deleteOne({
+  _id: ObjectId("64b9f8e5a1c2b3d456789012")
+});
+```
+
+### deleteMany() — eliminar por condición
+
+```js
+db.libros.deleteMany({
+  "autor.nombre": "Julio",
+  "autor.apellido": "Cortázar"
+});
+```
+
+<Warning>
+  `deleteMany()` sin filtro (`db.libros.deleteMany({})`) elimina **todos** los documentos de la colección. Siempre revisá el filtro antes de ejecutar una operación de eliminación masiva.
+</Warning>

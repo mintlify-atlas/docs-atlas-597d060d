@@ -1,0 +1,109 @@
+---
+title: "Introducción a Python y Programación Orientada a Objetos"
+sidebarTitle: "Intro Python"
+description: "Aprende la sintaxis básica de Python, variables, condicionales, bucles y los fundamentos de la programación orientada a objetos con clases."
+---
+
+Python es el lenguaje principal utilizado en este curso. Se trata de un lenguaje de programación interpretado, de alto nivel y muy fácil de leer y escribir. Es ampliamente utilizado en desarrollo web, construcción de APIs, análisis de datos, automatización e inteligencia artificial, lo que lo convierte en una de las herramientas más versátiles y demandadas en la industria del software.
+
+## Características principales
+
+Python se destaca por las siguientes cualidades:
+
+- **Sintaxis sencilla** — se asemeja al lenguaje natural, lo que facilita el aprendizaje.
+- **Código legible y limpio** — la indentación obligatoria fuerza buenas prácticas de formato.
+- **Gran comunidad y muchas librerías disponibles** — existe una solución para casi cualquier problema.
+- **Multiparadigma** — soporta programación estructurada, orientada a objetos y funcional.
+
+## Sintaxis básica
+
+Python utiliza la indentación para delimitar bloques de código, sin llaves ni palabras clave de cierre. El siguiente ejemplo muestra cómo declarar variables, escribir un condicional y recorrer un rango con un bucle `for`.
+
+```python
+# Variables
+nombre = "Juan"
+edad = 25
+
+# Condicional
+if edad >= 18:
+    print("Es mayor de edad")
+else:
+    print("Es menor de edad")
+
+# Bucle
+for i in range(5):
+    print(i)
+```
+
+## Programación Orientada a Objetos (POO)
+
+La programación orientada a objetos organiza el código en **clases** y **objetos**. Una clase es la plantilla, y un objeto es una instancia concreta de esa plantilla. El método especial `__init__` funciona como el constructor de la clase y se ejecuta automáticamente al crear un nuevo objeto.
+
+```python
+class Persona:
+    def __init__(self, nombre, edad):
+        self.nombre = nombre
+        self.edad = edad
+
+    def saludar(self):
+        print(f"Hola, mi nombre es {self.nombre} y tengo {self.edad} años.")
+
+persona1 = Persona("Ana", 30)
+persona1.saludar()
+```
+
+En el ejemplo, `Persona("Ana", 30)` crea un objeto con los atributos `nombre` y `edad`. Llamar a `persona1.saludar()` ejecuta el método definido en la clase e imprime el saludo correspondiente.
+
+## Importar módulos desde otro archivo
+
+A medida que los proyectos crecen, es conveniente separar el código en múltiples archivos `.py` y organizarlos en carpetas (módulos). La carpeta debe contener un archivo `__init__.py` (puede estar vacío) para que Python la reconozca como un paquete.
+
+**Estructura del proyecto:**
+
+```
+mi_proyecto/
+├── persona/
+│   ├── __init__.py
+│   └── persona.py
+└── main.py
+```
+
+**`persona/persona.py`**
+
+```python
+class Persona:
+   #Usando constructor
+   # def __init__(self, nombre):
+   #     self.nombre = nombre
+
+    def saludar(self):
+        print(f"Hola, soy {self.nombre}")
+```
+
+**`main.py`**
+
+```python
+from persona.persona import Persona
+
+p = Persona()
+#p = Persona("Carlos") # si usamos el constructor
+p.nombre = "Genghis Khan"
+p.saludar()
+```
+
+**Ejecutar el proyecto:**
+
+```bash
+python main.py
+```
+
+<Tip>
+Aseguráte de que ambos archivos estén en la misma carpeta raíz o de configurar correctamente los módulos antes de ejecutar. Utiliza nombres descriptivos para las clases, funciones y variables, e instala plugins de Python en VS Code (como Pylance y Python Indent) para mejorar la experiencia de desarrollo con autocompletado, detección de errores y formato automático.
+</Tip>
+
+## Recomendaciones
+
+- Utiliza nombres descriptivos para las clases, funciones y variables.
+- Agrega comentarios claros y explicativos para documentar la intención del código.
+- Usa plugins en VS Code para mejorar la experiencia de desarrollo.
+- Cuando trabajes con módulos propios, aseguráte de que cada carpeta tenga su archivo `__init__.py`.

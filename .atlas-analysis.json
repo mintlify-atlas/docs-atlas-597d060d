@@ -1,0 +1,95 @@
+{
+  "projectType": "general",
+  "projectName": "Plataformas Abiertas",
+  "projectDescription": "Repositorio educativo del curso Plataformas Abiertas que cubre Git/GitHub, MongoDB y desarrollo de APIs con Python y Flask.",
+  "theme": "palm",
+  "primaryColor": "#040404",
+  "lightColor": "#ffffff",
+  "darkColor": "#04abdc",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guías",
+        "groups": [
+          {
+            "group": "Introducción",
+            "pages": [
+              "introduction",
+              "arquitectura"
+            ]
+          },
+          {
+            "group": "Git y GitHub",
+            "pages": [
+              "git/guia-inicial",
+              "git/branches-pull-requests",
+              "git/github-desktop"
+            ]
+          },
+          {
+            "group": "MongoDB",
+            "pages": [
+              "mongodb/cuenta-atlas",
+              "mongodb/importar-datos",
+              "mongodb/consultas-crud",
+              "mongodb/agregaciones"
+            ]
+          },
+          {
+            "group": "Python y APIs",
+            "pages": [
+              "python/intro-python",
+              "python/hola-mundo-api",
+              "python/estructura-proyecto"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Referencia",
+        "groups": [
+          {
+            "group": "Referencia de Comandos",
+            "pages": [
+              "referencia/comandos-git",
+              "referencia/operadores-mongodb",
+              "referencia/endpoints-flask"
+            ]
+          },
+          {
+            "group": "Recursos",
+            "pages": [
+              "recursos/herramientas",
+              "recursos/datos-ejemplo"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Guía paso a paso para configurar Git y publicar en GitHub",
+    "Manejo de branches y Pull Requests en GitHub y GitHub Desktop",
+    "Configuración de MongoDB Atlas y conexión con Compass",
+    "CRUD completo en MongoDB con ejemplos de la base de datos libreria",
+    "Agregaciones en MongoDB con $match, $group, $sort, $lookup y $project",
+    "Introducción a Python y programación orientada a objetos",
+    "Construcción de APIs REST con Flask y Flask-CORS",
+    "Estructura de proyecto Flask con Blueprints y controladores"
+  ],
+  "publicApiSurface": [
+    "GET /holamundo-ejemplo/api/v1/holamundo",
+    "GET /holamundo-ejemplo/api/v1/saludo?nombre=&apellido=",
+    "GET /estudiante/api/v1/hola",
+    "GET /estudiante/api/v1/saludo",
+    "GET /estudiante/api/v1/saludo-parametros?nombre=&apellido=",
+    "db.collection.insertOne(documento)",
+    "db.collection.insertMany([...])",
+    "db.collection.find(filtro)",
+    "db.collection.updateOne(filtro, operador)",
+    "db.collection.updateMany(filtro, operador)",
+    "db.collection.deleteOne(filtro)",
+    "db.collection.deleteMany(filtro)",
+    "db.collection.aggregate([pipeline])"
+  ]
+}

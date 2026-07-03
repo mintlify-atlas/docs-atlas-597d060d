@@ -1,0 +1,107 @@
+---
+title: "Usar Git y GitHub con GitHub Desktop"
+sidebarTitle: "GitHub Desktop"
+description: "Gestiona repositorios, commits, ramas y Pull Requests de forma visual con GitHub Desktop sin necesidad de usar la terminal."
+---
+
+GitHub Desktop es una aplicación de escritorio que te permite usar Git y GitHub de forma completamente visual, sin necesidad de escribir comandos en la terminal. Es ideal para quienes están comenzando, ya que simplifica las operaciones más comunes —clonar repositorios, hacer commits y subir cambios— con una interfaz gráfica intuitiva.
+
+## Requisitos previos
+
+- **Cuenta de GitHub** — créala en [https://github.com](https://github.com)
+- **GitHub Desktop instalado** — descárgalo en [https://desktop.github.com](https://desktop.github.com)
+
+---
+
+<Steps>
+
+  <Step title="Crear un repositorio en GitHub">
+    1. Iniciá sesión en [https://github.com](https://github.com)
+    2. Hacé clic en el botón **"New"**
+    3. Completá los campos:
+       - **Repository name**: `mi-primer-repo`
+       - (Opcional) Una descripción del proyecto
+    4. Marcá la opción **"Add a README file"**
+    5. Hacé clic en **"Create repository"**
+  </Step>
+
+  <Step title="Descargar e instalar GitHub Desktop, e iniciar sesión">
+    1. Ve a [https://desktop.github.com](https://desktop.github.com) y descargá el instalador para tu sistema operativo
+    2. Instalá GitHub Desktop siguiendo el asistente
+    3. Abrí la aplicación e iniciá sesión con tu cuenta de GitHub cuando te lo solicite
+  </Step>
+
+  <Step title="Clonar el repositorio en GitHub Desktop">
+    1. En GitHub Desktop, hacé clic en **File → Clone repository...**
+    2. Verás la lista de repositorios de tu cuenta de GitHub — seleccioná el que acabás de crear: `mi-primer-repo`
+    3. Elegí la carpeta local donde querés guardarlo
+    4. Hacé clic en **"Clone"**
+
+    GitHub Desktop descargará el repositorio y lo dejará listo para trabajar localmente.
+  </Step>
+
+  <Step title="Editar archivos localmente">
+    1. Abrí la carpeta del repositorio en tu computadora
+    2. Agregá o editá archivos (por ejemplo, `README.md`)
+    3. Volvé a GitHub Desktop: los cambios detectados aparecerán automáticamente en el panel de la izquierda
+  </Step>
+
+  <Step title="Hacer commit">
+    1. En GitHub Desktop, revisá los cambios detectados en el panel izquierdo
+    2. Escribí un mensaje de resumen descriptivo en el campo de texto inferior, por ejemplo:
+       `"Agregué mi nombre al README"`
+    3. Hacé clic en el botón **"Commit to main"**
+
+    El commit queda guardado en tu repositorio local.
+  </Step>
+
+  <Step title="Hacer push (subir los cambios a GitHub)">
+    Después de hacer el commit:
+
+    1. Hacé clic en el botón **"Push origin"** en la barra superior de GitHub Desktop
+    2. Esto subirá los cambios al repositorio en GitHub
+
+    Con esto tu proyecto queda actualizado en la nube. 🚀
+  </Step>
+
+  <Step title="(Opcional) Crear una rama en GitHub Desktop">
+    1. En la esquina superior izquierda de GitHub Desktop, hacé clic en el nombre de la rama actual (`main`)
+    2. Escribí el nombre de la nueva rama, por ejemplo: `rama-tarea`
+    3. Hacé clic en **"Create Branch"**
+    4. Realizá tus cambios, hacé commit y push de la misma forma que en los pasos anteriores
+  </Step>
+
+  <Step title="Crear un Pull Request desde GitHub web">
+    1. Ve a tu repositorio en [https://github.com](https://github.com)
+    2. GitHub mostrará un botón **"Compare & pull request"** para la rama recién subida — hacé clic
+    3. Agregá un título y una descripción para el PR
+    4. Hacé clic en **"Create pull request"**
+
+    Un administrador del repositorio podrá revisar y fusionar el PR desde la interfaz web de GitHub.
+  </Step>
+
+</Steps>
+
+---
+
+<Tip>
+  **Buenas prácticas al trabajar con GitHub Desktop:**
+
+  - **Usá ramas para organizar tu trabajo.** Crear una rama por cada nueva funcionalidad o corrección evita afectar el código estable de `main`.
+  - **Escribí mensajes de commit claros y descriptivos.** Un buen mensaje explica *qué* cambió y *por qué*, facilitando la revisión posterior.
+  - **GitHub Desktop es visual, pero conocer los comandos es valioso.** Entender el flujo por terminal te da mayor control y te prepara para entornos donde no hay interfaz gráfica disponible.
+</Tip>
+
+---
+
+## Recursos
+
+<CardGroup cols={1}>
+  <Card
+    title="GitHub Desktop — Documentación oficial"
+    icon="book"
+    href="https://docs.github.com/en/desktop"
+  >
+    Guías completas sobre cómo usar GitHub Desktop para clonar repositorios, gestionar ramas, resolver conflictos y más.
+  </Card>
+</CardGroup>

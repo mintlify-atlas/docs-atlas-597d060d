@@ -1,72 +1,87 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Plataformas Abiertas",
+  "theme": "palm",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#040404",
+    "light": "#ffffff",
+    "dark": "#04abdc"
   },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
+  "favicon": "https://media.brand.dev/59857729-7ddc-4d29-a23b-aaa2f2526a4c.svg",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "https://media.brand.dev/2db66b44-e825-4f2e-a9c8-9c65a5c8e4c2.svg",
+    "dark": "https://media.brand.dev/2db66b44-e825-4f2e-a9c8-9c65a5c8e4c2.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
     "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "type": "github",
+      "href": "https://github.com/danielcruca/plataformas-abiertas-2026-2c"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/danielcruca/plataformas-abiertas-2026-2c"
     }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guías",
+        "groups": [
+          {
+            "group": "Introducción",
+            "pages": [
+              "introduction",
+              "arquitectura"
+            ]
+          },
+          {
+            "group": "Git y GitHub",
+            "pages": [
+              "git/guia-inicial",
+              "git/branches-pull-requests",
+              "git/github-desktop"
+            ]
+          },
+          {
+            "group": "MongoDB",
+            "pages": [
+              "mongodb/cuenta-atlas",
+              "mongodb/importar-datos",
+              "mongodb/consultas-crud",
+              "mongodb/agregaciones"
+            ]
+          },
+          {
+            "group": "Python y APIs",
+            "pages": [
+              "python/intro-python",
+              "python/hola-mundo-api",
+              "python/estructura-proyecto"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Referencia",
+        "groups": [
+          {
+            "group": "Referencia de Comandos",
+            "pages": [
+              "referencia/comandos-git",
+              "referencia/operadores-mongodb",
+              "referencia/endpoints-flask"
+            ]
+          },
+          {
+            "group": "Recursos",
+            "pages": [
+              "recursos/herramientas",
+              "recursos/datos-ejemplo"
+            ]
+          }
+        ]
+      }
+    ]
   }
 }

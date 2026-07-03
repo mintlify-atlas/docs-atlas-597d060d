@@ -1,0 +1,199 @@
+---
+title: "Crear y Publicar un Repositorio Git en GitHub"
+sidebarTitle: "Guía Inicial"
+description: "Aprende a configurar Git, crear tu primer repositorio local y publicarlo en GitHub en 9 pasos con ejemplos de comandos reales."
+---
+
+En esta guía aprenderás a configurar Git por primera vez, inicializar un repositorio local, registrar tus cambios con commits y publicar tu proyecto en GitHub. Seguirás 9 pasos ordenados que cubren tanto el trabajo en tu computadora como la integración con la nube.
+
+## Requisitos previos
+
+- **Git instalado** — descárgalo en [https://git-scm.com/downloads](https://git-scm.com/downloads)
+- **Cuenta de GitHub** — créala en [https://github.com](https://github.com)
+
+---
+
+## Parte 1 — Uso de Git (local)
+
+<Steps>
+
+  <Step title="Configurar Git (solo la primera vez)">
+    Abre una terminal y ejecuta los siguientes comandos reemplazando los valores con tu nombre y correo reales. Esta configuración se aplica de forma global a todos tus repositorios.
+
+    ```bash
+    git config --global user.name "Tu Nombre"
+    git config --global user.email "tucorreo@example.com"
+    ```
+  </Step>
+
+  <Step title="Crear una carpeta de proyecto y abrirla en VS Code">
+    Crea una carpeta con el nombre de tu proyecto, por ejemplo:
+
+    ```
+    C:\Users\TU-USUARIO\Documents\Proyectos\MI-NOMBRE-DE-PROYECTO
+    ```
+
+    Abre esa carpeta con Visual Studio Code y accede a la terminal integrada desde el menú **Terminal → New Terminal**.
+  </Step>
+
+  <Step title="Inicializar el repositorio Git">
+    Desde la terminal integrada de VS Code, estando dentro de la carpeta del proyecto, ejecuta:
+
+    ```bash
+    git init
+    ```
+
+    Esto crea una carpeta oculta `.git` que convierte la carpeta en un repositorio Git local.
+  </Step>
+
+  <Step title="Crear un archivo README.md">
+    Crea un archivo llamado `README.md` en la raíz del proyecto con el siguiente contenido de ejemplo:
+
+    ```markdown
+    # Tareas Plataformas Abiertas
+
+    *Nombre de estudiante:* TU NOMBRE Y APELLIDOS.
+    ```
+
+    También puedes crear una carpeta `imagenes` y colocar allí cualquier imagen de tu elección.
+  </Step>
+
+  <Step title="Agregar archivos al staging">
+    El área de *staging* es donde preparas los archivos antes de confirmarlos. Para agregar todos los archivos del proyecto ejecuta:
+
+    ```bash
+    git add .
+    ```
+
+    Para verificar qué archivos fueron agregados:
+
+    ```bash
+    git status
+    ```
+
+    Los archivos listados en verde están listos para ser confirmados con un commit.
+  </Step>
+
+  <Step title="Hacer el primer commit">
+    Un *commit* guarda una instantánea de los cambios en tu repositorio local. El parámetro `-m` permite agregar un mensaje descriptivo:
+
+    ```bash
+    git commit -m "Primer commit"
+    ```
+
+    Otros ejemplos de mensajes descriptivos:
+
+    ```bash
+    git commit -m "Agregado soporte a base de datos."
+    # Otro ejemplo:
+    git commit -m "Arregla timeout en produccion."
+    ```
+  </Step>
+
+</Steps>
+
+---
+
+## Parte 2 — Integración con GitHub (en la nube)
+
+<Steps>
+
+  <Step title="Crear un repositorio en GitHub">
+    1. Ve a [https://github.com](https://github.com)
+    2. Haz clic en **Create repository**
+    3. Escribe el nombre del repositorio, por ejemplo: `tareas-plataformas-abiertas`
+    4. **Desmarca** la opción *Initialize this repository with a README* (ya tienes uno local)
+    5. Haz clic en **Create repository**
+  </Step>
+
+  <Step title="Conectar el repositorio local con GitHub">
+    Copia la URL del repositorio recién creado en GitHub (termina en `.git`). Luego ejecuta estos dos comandos en tu terminal:
+
+    ```bash
+    git branch -M main
+    ```
+
+    ```bash
+    git remote add origin https://github.com/TU-USUARIO/tareas-plataformas-abiertas.git
+    ```
+
+    Esto renombra tu rama principal a `main` y enlaza tu repositorio local con el remoto en GitHub. La palabra `origin` es el nombre que le das a ese repositorio remoto.
+  </Step>
+
+  <Step title="Subir el proyecto a GitHub">
+    Para subir tu proyecto por primera vez a la nube ejecuta:
+
+    ```bash
+    git push -u origin main
+    ```
+
+    Es posible que aparezca una pantalla para autenticarte con GitHub. Una vez completada, tu repositorio local y el remoto quedarán sincronizados.
+
+    <Warning>
+      Si tu rama principal se llama `master` en lugar de `main`, usa `git push -u origin master` solo en ese caso.
+    </Warning>
+  </Step>
+
+</Steps>
+
+---
+
+## Flujo de trabajo habitual
+
+Una vez que el repositorio ya está conectado a GitHub, el ciclo para agregar nuevos cambios se reduce a tres comandos:
+
+```bash
+# 1. Agregar los cambios al área de staging (todos los archivos)
+git add .
+# O si solo querés agregar un archivo específico:
+git add archivo-nuevo.py
+
+# 2. Confirmar (commit) los cambios con un mensaje descriptivo
+git commit -m "Agrega nueva función de búsqueda en app.py"
+
+# 3. Enviar (push) los cambios al repositorio remoto, rama principal
+git push origin main
+```
+
+---
+
+## Comandos útiles
+
+Ver el estado actual de los archivos (sin cambios, en staging, sin confirmar):
+
+```bash
+git status
+```
+
+Ver el historial de commits realizados en el repositorio:
+
+```bash
+git log
+```
+
+---
+
+## Clonar un repositorio existente
+
+Si el repositorio ya existe en GitHub y solo necesitás descargarlo, usá `git clone`. Por ejemplo, para clonar el repositorio de este curso:
+
+```bash
+git clone https://github.com/danielcruca/plataformas-abiertas.git
+```
+
+Una vez clonado, el repositorio ya está vinculado al remoto y podés trabajar con él de inmediato.
+
+---
+
+## Agregar colaboradores
+
+Para trabajar de forma colaborativa, podés agregar otros usuarios como colaboradores de tu repositorio:
+
+1. Ve a la página de tu repositorio en GitHub
+2. Haz clic en **Settings** (Configuración)
+3. En el menú lateral selecciona **Collaborators**
+4. Haz clic en **Add people** e ingresa el nombre de usuario de GitHub de tu colaborador
+
+<Note>
+  Solo los administradores del repositorio pueden agregar colaboradores. El nombre de usuario del profesor del curso es **danielcruca**.
+</Note>

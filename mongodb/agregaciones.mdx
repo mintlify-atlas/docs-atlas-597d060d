@@ -1,0 +1,257 @@
+---
+title: "Agregaciones en MongoDB con Pipeline"
+sidebarTitle: "Agregaciones"
+description: "Usa el pipeline de agregación de MongoDB con $match, $group, $sort, $project, $lookup y $limit para consultas avanzadas."
+---
+
+Un **pipeline de agregación** en MongoDB funciona como una línea de producción: los datos de una colección entran al pipeline y se van transformando paso a paso a través de una serie de **etapas** (stages). Cada etapa recibe los documentos que salieron de la etapa anterior, les aplica una operación y los pasa a la siguiente. Al final del pipeline obtenés el resultado procesado y resumido que necesitás. Este mecanismo es el equivalente a los `GROUP BY`, `JOIN` y subconsultas de SQL, pero expresado de forma declarativa y componible.
+
+---
+
+## Etapas del pipeline
+
+| Etapa | ¿Qué hace? | Ejemplo simple |
+|-------|-----------|----------------|
+| `$match` | Filtra documentos (como un `WHERE`) | Solo ventas del 2025 |
+| `$group` | Agrupa documentos y calcula valores (como un `GROUP BY`) | Total vendido por producto |
+| `$sort` | Ordena los resultados | De mayor a menor cantidad vendida |
+| `$project` | Escoge y transforma los campos a mostrar | Mostrar solo nombre y total |
+| `$limit` | Muestra solo cierta cantidad de resultados | Los 5 productos más vendidos |
+| `$lookup` | Une datos de otra colección (como un `JOIN`) | Buscar el stock del producto |
+
+---
+
+## Ejemplos con la base de datos `libreria`
+
+Los siguientes ejemplos usan las colecciones `ventas` y `libros` de la base de datos `libreria` del curso. Cada uno muestra un caso de uso real junto a su equivalente en SQL.
+
+### a. Cantidad vendida de libros por fecha específica
+
+Este pipeline filtra las ventas de un día particular, agrupa los resultados por título de libro sumando las cantidades vendidas, y los ordena de mayor a menor.
+
+**Etapas utilizadas:** `$match` → `$group` → `$sort`
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.ventas.aggregate([
+      {
+        $match: {
+          fecha_venta: new Date("2025-05-12") // Filtrar por fecha específica
+        }
+      },
+      {
+        $group: {
+          _id: "$libro.titulo",              // Agrupar por título del libro
+          cantidad_vendida: { $sum: "$cantidad" } // Sumar cantidad vendida
+        }
+      },
+      {
+        $sort: { cantidad_vendida: -1 }      // Ordenar de mayor a menor (-1 descendente)
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT
+      l.titulo AS titulo,
+      SUM(v.cantidad) AS cantidad_vendida
+    FROM
+      ventas v
+    JOIN
+      libros l ON v.id_libro = l.id
+    WHERE
+      v.fecha_venta = '2025-05-12'
+    GROUP BY
+      l.titulo
+    ORDER BY
+      cantidad_vendida DESC;
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### b. Libros con al menos una venta
+
+Este pipeline filtra solo los registros con cantidad mayor a cero, luego agrupa por título sumando el total vendido y ordena los resultados.
+
+**Etapas utilizadas:** `$match` → `$group` → `$sort`
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.ventas.aggregate([
+      {
+        $match: {
+          cantidad: { $gt: 0 } // Solo ventas con cantidad mayor a 0
+        }
+      },
+      {
+        $group: {
+          _id: "$libro.titulo",
+          cantidad_vendida: { $sum: "$cantidad" }
+        }
+      },
+      {
+        $sort: { cantidad_vendida: -1 }
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT
+      libro_titulo AS titulo,
+      SUM(cantidad) AS cantidad_vendida
+    FROM
+      ventas
+    WHERE
+      cantidad > 0
+    GROUP BY
+      libro_titulo
+    ORDER BY
+      cantidad_vendida DESC;
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### c. Libros vendidos y su stock restante
+
+Este es el ejemplo más completo. Combina varias etapas para calcular cuántas unidades quedan en stock después de las ventas. El `$lookup` actúa como un `JOIN` con la colección `libros`, y `$unwind` descomprime el array resultante para poder acceder a sus campos en `$project`.
+
+**Etapas utilizadas:** `$group` → `$lookup` → `$unwind` → `$project` → `$sort`
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.ventas.aggregate([
+      {
+        $group: {
+          _id: "$libro.titulo",
+          cantidadVendida: { $sum: "$cantidad" }
+        }
+      },
+      {
+        $lookup: {
+          from: "libros",          // JOIN con la colección libros
+          localField: "_id",       // Campo local: título agrupado
+          foreignField: "titulo",  // Campo foráneo: título en libros
+          as: "info_libro"         // Nombre del campo resultante (array)
+        }
+      },
+      {
+        $unwind: "$info_libro"     // Descomprime el array para acceder a sus campos
+      },
+      {
+        $project: {
+          _id: 1,
+          titulo: "$_id",                           // Renombrar _id como titulo
+          cantidadInicial: "$info_libro.cantidad_stock",
+          cantidadVendida: 1,
+          cantidadRestante: {
+            $subtract: [
+              "$info_libro.cantidad_stock",
+              "$cantidadVendida"
+            ]
+          }
+        }
+      },
+      {
+        $sort: { cantidadVendida: -1 }
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT
+      l.titulo,
+      l.cantidad_stock AS cantidad_inicial,
+      SUM(v.cantidad) AS cantidad_vendida,
+      l.cantidad_stock - SUM(v.cantidad) AS cantidad_restante
+    FROM
+      ventas v
+    JOIN
+      libros l ON v.id_libro = l.id
+    GROUP BY
+      l.titulo, l.cantidad_stock
+    ORDER BY
+      cantidad_vendida DESC;
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  En MongoDB no existen claves foráneas como en SQL. El `$lookup` simula ese comportamiento comparando los valores de dos campos entre colecciones. Por eso es importante que los valores que usás como "clave" (en este caso el título del libro) sean consistentes entre `ventas` y `libros`.
+</Note>
+
+---
+
+### d. Top 5 libros más vendidos
+
+Este pipeline agrupa todas las ventas por título, suma las cantidades, ordena de mayor a menor y recorta el resultado a los primeros 5 documentos.
+
+**Etapas utilizadas:** `$group` → `$sort` → `$limit`
+
+<Tabs>
+  <Tab title="MongoDB">
+    ```js
+    db.ventas.aggregate([
+      {
+        $group: {
+          _id: "$libro.titulo",                   // Agrupar por título
+          cantidadVendida: { $sum: "$cantidad" }  // Sumar cantidad vendida
+        }
+      },
+      {
+        $sort: { cantidadVendida: -1 }            // Ordenar descendente
+      },
+      {
+        $limit: 5                                 // Limitar a los 5 primeros
+      }
+    ]);
+    ```
+  </Tab>
+  <Tab title="SQL equivalente">
+    ```sql
+    SELECT
+      libro_titulo AS titulo,
+      SUM(cantidad) AS cantidad_vendida
+    FROM
+      ventas
+    GROUP BY
+      libro_titulo
+    ORDER BY
+      cantidad_vendida DESC
+    LIMIT 5;
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Ejemplo sencillo: libros agrupados por autor
+
+Para terminar, un ejemplo introductorio que muestra cómo agrupar los libros del catálogo por autor y contar cuántos libros tiene cada uno. Es un buen punto de partida para entender la mecánica básica del pipeline sin la complejidad de un `$lookup`.
+
+```js
+db.libros.aggregate([
+  {
+    $group: {
+      _id: "$autor",            // Agrupar por el objeto autor completo
+      totalLibros: { $sum: 1 }  // Contar cuántos libros tiene cada autor
+    }
+  },
+  {
+    $sort: { totalLibros: -1 }  // Ordenar de mayor a menor cantidad
+  }
+]);
+```
+
+<Tip>
+  En este ejemplo, `_id: "$autor"` agrupa por el objeto `autor` completo (incluyendo nombre, apellido y nacionalidad). Si solo querés agrupar por apellido, podés usar `_id: "$autor.apellido"` para obtener resultados más granulares.
+</Tip>

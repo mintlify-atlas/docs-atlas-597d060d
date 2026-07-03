@@ -1,0 +1,114 @@
+---
+title: "Estructura de un Proyecto Flask con Blueprints"
+sidebarTitle: "Estructura del Proyecto"
+description: "Organiza una API Flask con la fábrica de aplicaciones create_app, Blueprints para controladores y separación de rutas por recurso."
+---
+
+Cuando una API comienza a crecer, poner todo el código en un solo archivo se vuelve difícil de mantener. Flask ofrece dos patrones clave para estructurar proyectos de forma ordenada: la **fábrica de aplicaciones** con `create_app()` y los **Blueprints**, que permiten agrupar rutas relacionadas en módulos independientes. Combinar ambos patrones desde el inicio facilita la escalabilidad, las pruebas y la colaboración en equipo.
+
+## Patrón de fábrica de aplicaciones
+
+El patrón de fábrica de aplicaciones consiste en encapsular la creación de la instancia de Flask dentro de una función llamada `create_app()`, definida en el archivo `__init__.py` de la carpeta `app`. Esta función es responsable de:
+
+1. **Instanciar Flask** con `app = Flask(__name__)`.
+2. **Registrar los Blueprints** mediante `app.register_blueprint(...)` junto con su prefijo de URL.
+3. **Configurar CORS** con `CORS(app, origins="*")` para controlar qué orígenes pueden consumir la API.
+4. **Retornar la app** lista para ser usada por `run.py`.
+
+Este enfoque evita tener una variable global de la aplicación dispersa por todo el código y hace que la configuración sea más explícita y testeable.
+
+## Blueprints
+
+Un Blueprint es un objeto que agrupa un conjunto de rutas (endpoints) relacionadas bajo un mismo nombre y prefijo de URL. En lugar de registrar todas las rutas directamente sobre la app, cada controlador define su propio Blueprint y la fábrica de aplicaciones se encarga de registrarlos.
+
+El siguiente ejemplo corresponde a la API de estudiantes del curso:
+
+<CodeGroup>
+
+```python app/__init__.py
+from flask import Flask
+from flask_cors import CORS
+from .controllers.estudiantes import estudiante_endpoint
+
+def create_app():
+    app = Flask(__name__)
+    CORS(app)
+    app.register_blueprint(estudiante_endpoint, url_prefix='/estudiante/api/v1')
+    CORS(app, origin='*')
+    return app
+```
+
+```python app/controllers/estudiantes.py
+from flask import Blueprint, jsonify, request
+
+estudiante_endpoint = Blueprint('estudiante_endpoints', __name__)
+
+# http://127.0.0.1:5000/estudiante/api/v1/hola
+@estudiante_endpoint.route('/hola', methods=['GET'])
+def holamundo():
+    return jsonify({"message": "Hola estudiante", "status": "success"})
+
+# http://127.0.0.1:5000/estudiante/api/v1/saludo-parametros?nombre=Luis&apellido=Coto
+@estudiante_endpoint.route('/saludo-parametros', methods=['GET'])
+def saludo_con_parametros():
+    nombre = request.args.get('nombre')
+    apellido = request.args.get('apellido')
+    if not nombre or not apellido:
+        return jsonify({'error': 'Faltan parámetros nombre o apellido'}), 400
+    saludo = f"Hola estudiante {nombre} {apellido}"
+    return jsonify({'saludo': saludo}), 200
+```
+
+</CodeGroup>
+
+## URL prefix
+
+Cuando registrás un Blueprint con `url_prefix`, Flask construye la URL final concatenando el prefijo con el decorador `@route` del endpoint. Por ejemplo:
+
+| Parte | Valor |
+|---|---|
+| `url_prefix` en `register_blueprint` | `/estudiante/api/v1` |
+| `@route` en el controlador | `/hola` |
+| URL completa | `http://127.0.0.1:5000/estudiante/api/v1/hola` |
+
+Esta convención hace que sea fácil versionar la API (cambiando `v1` a `v2`) y agrupar los endpoints de cada recurso bajo un mismo espacio de nombres.
+
+## Parámetros de consulta vs JSON body
+
+Flask ofrece dos formas principales de recibir datos en una petición GET:
+
+**Parámetros de consulta (query string)** — se envían en la URL después del símbolo `?` y se leen con `request.args.get()`:
+
+```python
+# URL: /saludo-parametros?nombre=Luis&apellido=Coto
+nombre = request.args.get('nombre')
+apellido = request.args.get('apellido')
+```
+
+**JSON body** — se envían en el cuerpo de la petición (típico en POST/PUT) y se leen con `request.get_json()`:
+
+```python
+# Body: { "nombre": "Luis", "apellido": "Coto" }
+data = request.get_json()
+nombre = data.get('nombre')
+apellido = data.get('apellido')
+```
+
+Para endpoints GET con filtros o búsquedas, la convención REST es usar parámetros de consulta. Para crear o actualizar recursos (POST, PUT, PATCH), se usa el JSON body.
+
+## Herramientas para probar la API
+
+Antes de conectar un frontend, es fundamental probar los endpoints de la API de forma manual. Las siguientes herramientas permiten enviar peticiones HTTP con distintos métodos, parámetros y cuerpos JSON:
+
+<CardGroup cols={2}>
+  <Card title="Postman" icon="paper-plane" href="https://www.postman.com/downloads/">
+    La herramienta más popular para probar APIs. Permite organizar peticiones en colecciones, agregar variables de entorno y compartir configuraciones con el equipo.
+  </Card>
+  <Card title="Insomnia" icon="moon" href="https://insomnia.rest/">
+    Alternativa liviana a Postman con una interfaz limpia. Ideal para quienes buscan simplicidad sin sacrificar funcionalidades esenciales.
+  </Card>
+</CardGroup>
+
+<Tip>
+VS Code tiene un plugin oficial de Postman disponible en el [Marketplace de VS Code](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode). Con él podés crear y ejecutar peticiones HTTP directamente desde el editor, sin necesidad de cambiar de ventana mientras desarrollás.
+</Tip>

@@ -1,0 +1,146 @@
+---
+title: "Crear una API Hola Mundo con Flask y Python"
+sidebarTitle: "API Hola Mundo"
+description: "Construye tu primera API REST con Flask en Python. Crea endpoints GET, instala Flask-CORS y entiende la estructura de Blueprints."
+---
+
+Flask es un microframework web para Python ligero y minimalista. A diferencia de frameworks más grandes como Django, Flask te permite construir una API desde cero eligiendo cada componente que necesitás, lo que lo hace ideal para aprender los fundamentos del desarrollo back-end y para construir servicios REST de manera rápida y ordenada.
+
+## Prerequisitos
+
+- Python 3.x instalado en tu sistema.
+- `pip` disponible en la terminal para instalar paquetes.
+
+## Estructura del proyecto
+
+Antes de escribir código, creá la siguiente estructura de carpetas y archivos en tu directorio de trabajo. Respetar esta organización desde el comienzo facilita el escalado del proyecto a medida que se agregan más endpoints y funcionalidades.
+
+```
+MI-CARPETA-DE-API/
+├── readme.md
+├── data/
+└── v1/
+    ├── run.py
+    └── app/
+        ├── __init__.py
+        └── controllers/
+            └── holamundo.py
+```
+
+## Instalación de dependencias
+
+Abrí una terminal y ejecutá los siguientes comandos para instalar Flask y Flask-CORS. Se recomienda hacerlo dentro de un entorno virtual para mantener las dependencias aisladas por proyecto.
+
+```bash
+pip install flask
+pip install flask_cors
+```
+
+## Archivos clave
+
+El proyecto se compone de tres archivos principales. `run.py` es el punto de entrada que arranca el servidor. `__init__.py` contiene la fábrica de aplicaciones que inicializa Flask y registra los Blueprints. `holamundo.py` es el controlador donde se definen los endpoints.
+
+<CodeGroup>
+
+```python run.py
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+```python app/__init__.py
+from flask import Flask
+from flask_cors import CORS
+from .controllers.holamundo import holamundo_endpoints
+
+def create_app():
+    app = Flask(__name__)
+    app.register_blueprint(holamundo_endpoints, url_prefix="/holamundo-ejemplo/api/v1")
+    CORS(app, origins="*")
+    return app
+```
+
+```python app/controllers/holamundo.py
+from flask import Blueprint, request, jsonify
+
+holamundo_endpoints = Blueprint('holamundo_endpoints', __name__)
+
+@holamundo_endpoints.route('/holamundo', methods=['GET'])
+def obtener_ventas():
+    holaMundo = "hola mundo"
+    return jsonify(holaMundo), 200
+
+@holamundo_endpoints.route('/saludo', methods=['GET'])
+def saludar():
+    nombre = request.args.get('nombre')
+    apellido = request.args.get('apellido')
+
+    if not nombre or not apellido:
+        return jsonify({'error': 'Faltan parámetros nombre o apellido'}), 400
+
+    saludo = f"Hola {nombre} {apellido}"
+    return jsonify({'saludo': saludo}), 200
+```
+
+</CodeGroup>
+
+## Arrancar la API
+
+<Steps>
+  <Step title="Abrí la terminal en la carpeta v1">
+    Navegá dentro de la carpeta `v1` de tu proyecto, que es donde se encuentra el archivo `run.py`.
+
+    ```bash
+    cd v1
+    ```
+  </Step>
+  <Step title="Ejecutá el servidor">
+    Iniciá la API con el siguiente comando:
+
+    ```bash
+    python run.py
+    ```
+  </Step>
+  <Step title="Verificá que la API esté corriendo">
+    Si todo salió bien, verás un mensaje en la terminal indicando que el servidor está escuchando en `http://127.0.0.1:5000`. La API ya está lista para recibir peticiones.
+  </Step>
+</Steps>
+
+<Note>
+El parámetro `debug=True` recarga automáticamente el servidor cuando hacés cambios en el código, sin necesidad de reiniciarlo manualmente.
+</Note>
+
+## Probar los endpoints
+
+Una vez que la API está corriendo, podés probar los dos endpoints disponibles desde tu navegador, Postman o cualquier cliente HTTP.
+
+**Endpoint 1 — Hola Mundo:**
+
+```
+GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/holamundo
+```
+
+Respuesta esperada:
+
+```json
+"hola mundo"
+```
+
+**Endpoint 2 — Saludo con parámetros:**
+
+```
+GET http://127.0.0.1:5000/holamundo-ejemplo/api/v1/saludo?nombre=Jose&apellido=Mujica
+```
+
+Respuesta esperada:
+
+```json
+{
+  "saludo": "Hola Jose Mujica"
+}
+```
+
+Si no se envían los parámetros `nombre` o `apellido`, la API responde con un error `400` y el mensaje `"Faltan parámetros nombre o apellido"`.
